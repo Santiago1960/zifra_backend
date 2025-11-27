@@ -1,0 +1,14 @@
+class: InvoiceDetail
+table: invoice_detail
+fields:
+
+  # Relación con el padre (Foreign Key)
+  invoice: Invoices?, relation(name=invoice_details)
+
+  # Datos del detalle
+  codigoPrincipal: String
+  descripcion: String
+  cantidad: double
+  precioUnitario: double
+  descuento: double
+  precioTotalSinImpuesto: double

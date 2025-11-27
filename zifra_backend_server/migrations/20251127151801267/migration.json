@@ -1,0 +1,45 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "invoice_detail",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "_invoicesDetallesInvoicesId"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [
+          "invoice_detail_fk_1"
+        ],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"_invoicesDetallesInvoicesId\" of table \"invoice_detail\" will be dropped.",
+            "table": "invoice_detail",
+            "columns": [
+              "_invoicesDetallesInvoicesId"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"_invoicesDetallesInvoicesId\" of table \"invoice_detail\" will be dropped.",
+      "table": "invoice_detail",
+      "columns": [
+        "_invoicesDetallesInvoicesId"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

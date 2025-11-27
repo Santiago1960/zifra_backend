@@ -1,0 +1,11 @@
+class: Projects
+table: projects
+fields:
+  cliente: String
+  nombre: String
+  fechaCreacion: DateTime
+  isClosed: bool
+  rucBeneficiario: String?
+  
+  # Relación inversa (Un proyecto tiene muchas facturas)
+  invoices: List<Invoices>?, relation

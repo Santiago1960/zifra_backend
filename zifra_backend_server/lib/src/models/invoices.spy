@@ -1,0 +1,53 @@
+class: Invoices
+table: invoices
+fields:
+
+  # Info tributaria
+  razonSocial: String
+  nombreComercial: String
+  ruc: String
+  claveAcceso: String
+  codDoc: String
+  estab: String
+  ptoEmi: String
+  secuencial: String
+  dirMatriz: String
+
+  # Info factura
+  fechaEmision: DateTime
+  dirEstablecimiento: String
+  contribuyenteEspecial: String?
+  obligadoContabilidad: String?
+  tipoIdentificacionComprador: String
+  razonSocialComprador: String
+  identificacionComprador: String
+  
+  # Totales
+  totalSinImpuestos: double
+  totalDescuento: double
+  baseImponibleIvaCero: double
+  baseImponibleIva: double
+  valorIVA: double
+  valorDevolucionIva: double
+  propina: double
+  importeTotal: double
+
+  # Relación inversa (para devolver la lista completa al frontend)
+  detalles: List<InvoiceDetail>?, relation(name=invoice_details)
+
+  # Otros
+  numeroAutorizacion: String?
+  fechaAutorizacion: DateTime?
+  categoria: String
+  estaSeleccionada: bool
+  certificada: bool
+
+  # Relación con el padre (Foreign Key)
+  project: Projects?, relation
+
+  # Bloque de índices
+indexes:
+  # Definimos el índice para la Clave de Acceso (debería ser única)
+  invoices_clave_acceso_idx:
+    fields: claveAcceso
+    unique: true
