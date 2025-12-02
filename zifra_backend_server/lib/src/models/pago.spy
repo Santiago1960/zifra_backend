@@ -1,0 +1,10 @@
+class: Pago
+table: pago
+fields:
+  formaPago: String
+  total: double
+  plazo: double
+  unidadTiempo: String
+  
+  # Relación con el padre (Foreign Key)
+  invoice: Invoices?, relation(name=invoice_pagos)

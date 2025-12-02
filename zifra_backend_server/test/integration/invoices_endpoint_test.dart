@@ -1,5 +1,4 @@
 import 'package:test/test.dart';
-import 'package:serverpod/serverpod.dart';
 import 'package:zifra_backend_server/src/generated/protocol.dart';
 import 'test_tools/serverpod_test_tools.dart';
 
@@ -72,8 +71,10 @@ void main() {
             ptoEmi: '001',
             secuencial: '000000001',
             dirMatriz: 'Dir 1',
-            fechaEmision: DateTime.now(),
+            fechaEmision: '2024-01-01',
             dirEstablecimiento: 'Dir 1',
+            contribuyenteEspecial: '12345',
+            obligadoContabilidad: 'SI',
             tipoIdentificacionComprador: '05',
             razonSocialComprador: 'Comprador 1',
             identificacionComprador: '2222222222',
@@ -88,6 +89,8 @@ void main() {
             categoria: 'Categoria A',
             estaSeleccionada: false,
             certificada: false,
+            numeroAutorizacion: '1234567890',
+            fechaAutorizacion: '2024-01-01',
             projectId: openProject.id!,
           ),
         );
@@ -105,8 +108,10 @@ void main() {
             ptoEmi: '001',
             secuencial: '000000002',
             dirMatriz: 'Dir 2',
-            fechaEmision: DateTime.now(),
+            fechaEmision: '2024-01-01',
             dirEstablecimiento: 'Dir 2',
+            contribuyenteEspecial: '12345',
+            obligadoContabilidad: 'SI',
             tipoIdentificacionComprador: '05',
             razonSocialComprador: 'Comprador 1',
             identificacionComprador: '2222222222',
@@ -121,6 +126,8 @@ void main() {
             categoria: 'Categoria A',
             estaSeleccionada: false,
             certificada: false,
+            numeroAutorizacion: '1234567890',
+            fechaAutorizacion: '2024-01-01',
             projectId: closedProject.id!,
           ),
         );
@@ -163,6 +170,117 @@ void main() {
         expect(result.first.id, equals(invoice1.id));
         expect(result.first.detalles, isNotNull);
         expect(result.first.detalles, hasLength(2));
+      },
+    );
+
+    test(
+      'when calling `saveInvoices` with invoices and details then they are saved correctly',
+      () async {
+        // 1. Setup Data
+        // Create a project to link the invoice to
+        final project = await Projects.db.insertRow(
+          session,
+          Projects(
+            cliente: 'Cliente Test',
+            nombre: 'Proyecto Test',
+            fechaCreacion: DateTime.now(),
+            isClosed: false,
+            rucBeneficiario: '1111111111001',
+          ),
+        );
+
+        final invoicesToSave = [
+          Invoices(
+            razonSocial: 'Razon Social Test',
+            nombreComercial: 'Comercial Test',
+            ruc: '1111111111001',
+            claveAcceso: '999999999',
+            codDoc: '01',
+            estab: '001',
+            ptoEmi: '001',
+            secuencial: '999999999',
+            dirMatriz: 'Dir Test',
+            fechaEmision: '2024-01-01',
+            dirEstablecimiento: 'Dir Test',
+            contribuyenteEspecial: '12345',
+            obligadoContabilidad: 'SI',
+            tipoIdentificacionComprador: '05',
+            razonSocialComprador: 'Comprador Test',
+            identificacionComprador: '2222222222',
+            totalSinImpuestos: 100.0,
+            totalDescuento: 0.0,
+            baseImponibleIvaCero: 0.0,
+            baseImponibleIva: 100.0,
+            valorIVA: 12.0,
+            valorDevolucionIva: 0.0,
+            propina: 0.0,
+            importeTotal: 112.0,
+            categoria: 'Categoria Test',
+            estaSeleccionada: false,
+            certificada: false,
+            numeroAutorizacion: '1234567890',
+            fechaAutorizacion: '2024-01-01',
+            projectId: project.id!,
+            detalles: [
+              InvoiceDetail(
+                codigoPrincipal: 'TEST1',
+                descripcion: 'Detalle Test 1',
+                cantidad: 1.0,
+                precioUnitario: 50.0,
+                descuento: 0.0,
+                precioTotalSinImpuesto: 50.0,
+                invoiceId: 0, // Temporary ID, will be overwritten
+              ),
+              InvoiceDetail(
+                codigoPrincipal: 'TEST2',
+                descripcion: 'Detalle Test 2',
+                cantidad: 1.0,
+                precioUnitario: 50.0,
+                descuento: 0.0,
+                precioTotalSinImpuesto: 50.0,
+                invoiceId: 0, // Temporary ID, will be overwritten
+              ),
+            ],
+            pagos: [
+              Pago(
+                formaPago: '01',
+                total: 112.0,
+                plazo: 30.0,
+                unidadTiempo: 'DIAS',
+                invoiceId: 0, // Temporary ID
+              ),
+            ],
+            infoAdicional: [
+              InvoiceInfoAdicional(
+                clave: 'Email',
+                valor: 'test@test.com',
+                invoiceId: 0, // Temporary ID
+              ),
+            ],
+          ),
+        ];
+
+        // 2. Call Endpoint
+        final result = await endpoints.invoices.saveInvoices(
+          sessionBuilder,
+          invoicesToSave,
+        );
+
+        // 3. Verify Results
+        expect(result, isTrue);
+
+        // Verify in DB
+        final savedInvoice = await Invoices.db.findFirstRow(
+          session,
+          where: (t) => t.claveAcceso.equals('999999999'),
+          include: Invoices.include(
+            detalles: InvoiceDetail.includeList(),
+          ),
+        );
+
+        expect(savedInvoice, isNotNull);
+        expect(savedInvoice!.detalles, hasLength(2));
+        expect(savedInvoice.detalles!.first.invoiceId, equals(savedInvoice.id));
       },
     );
   });

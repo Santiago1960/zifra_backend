@@ -13,7 +13,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'invoice_detail.dart' as _i2;
-import 'projects.dart' as _i3;
+import 'pago.dart' as _i3;
+import 'invoice_info_adicional.dart' as _i4;
+import 'projects.dart' as _i5;
 
 abstract class Invoices
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -30,8 +32,8 @@ abstract class Invoices
     required this.dirMatriz,
     required this.fechaEmision,
     required this.dirEstablecimiento,
-    this.contribuyenteEspecial,
-    this.obligadoContabilidad,
+    required this.contribuyenteEspecial,
+    required this.obligadoContabilidad,
     required this.tipoIdentificacionComprador,
     required this.razonSocialComprador,
     required this.identificacionComprador,
@@ -44,8 +46,10 @@ abstract class Invoices
     required this.propina,
     required this.importeTotal,
     this.detalles,
-    this.numeroAutorizacion,
-    this.fechaAutorizacion,
+    this.pagos,
+    this.infoAdicional,
+    required this.numeroAutorizacion,
+    required this.fechaAutorizacion,
     required this.categoria,
     required this.estaSeleccionada,
     required this.certificada,
@@ -64,10 +68,10 @@ abstract class Invoices
     required String ptoEmi,
     required String secuencial,
     required String dirMatriz,
-    required DateTime fechaEmision,
+    required String fechaEmision,
     required String dirEstablecimiento,
-    String? contribuyenteEspecial,
-    String? obligadoContabilidad,
+    required String contribuyenteEspecial,
+    required String obligadoContabilidad,
     required String tipoIdentificacionComprador,
     required String razonSocialComprador,
     required String identificacionComprador,
@@ -80,13 +84,15 @@ abstract class Invoices
     required double propina,
     required double importeTotal,
     List<_i2.InvoiceDetail>? detalles,
-    String? numeroAutorizacion,
-    DateTime? fechaAutorizacion,
+    List<_i3.Pago>? pagos,
+    List<_i4.InvoiceInfoAdicional>? infoAdicional,
+    required String numeroAutorizacion,
+    required String fechaAutorizacion,
     required String categoria,
     required bool estaSeleccionada,
     required bool certificada,
     required int projectId,
-    _i3.Projects? project,
+    _i5.Projects? project,
   }) = _InvoicesImpl;
 
   factory Invoices.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -101,13 +107,11 @@ abstract class Invoices
       ptoEmi: jsonSerialization['ptoEmi'] as String,
       secuencial: jsonSerialization['secuencial'] as String,
       dirMatriz: jsonSerialization['dirMatriz'] as String,
-      fechaEmision:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['fechaEmision']),
+      fechaEmision: jsonSerialization['fechaEmision'] as String,
       dirEstablecimiento: jsonSerialization['dirEstablecimiento'] as String,
       contribuyenteEspecial:
-          jsonSerialization['contribuyenteEspecial'] as String?,
-      obligadoContabilidad:
-          jsonSerialization['obligadoContabilidad'] as String?,
+          jsonSerialization['contribuyenteEspecial'] as String,
+      obligadoContabilidad: jsonSerialization['obligadoContabilidad'] as String,
       tipoIdentificacionComprador:
           jsonSerialization['tipoIdentificacionComprador'] as String,
       razonSocialComprador: jsonSerialization['razonSocialComprador'] as String,
@@ -128,18 +132,22 @@ abstract class Invoices
       detalles: (jsonSerialization['detalles'] as List?)
           ?.map((e) => _i2.InvoiceDetail.fromJson((e as Map<String, dynamic>)))
           .toList(),
-      numeroAutorizacion: jsonSerialization['numeroAutorizacion'] as String?,
-      fechaAutorizacion: jsonSerialization['fechaAutorizacion'] == null
-          ? null
-          : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['fechaAutorizacion']),
+      pagos: (jsonSerialization['pagos'] as List?)
+          ?.map((e) => _i3.Pago.fromJson((e as Map<String, dynamic>)))
+          .toList(),
+      infoAdicional: (jsonSerialization['infoAdicional'] as List?)
+          ?.map((e) =>
+              _i4.InvoiceInfoAdicional.fromJson((e as Map<String, dynamic>)))
+          .toList(),
+      numeroAutorizacion: jsonSerialization['numeroAutorizacion'] as String,
+      fechaAutorizacion: jsonSerialization['fechaAutorizacion'] as String,
       categoria: jsonSerialization['categoria'] as String,
       estaSeleccionada: jsonSerialization['estaSeleccionada'] as bool,
       certificada: jsonSerialization['certificada'] as bool,
       projectId: jsonSerialization['projectId'] as int,
       project: jsonSerialization['project'] == null
           ? null
-          : _i3.Projects.fromJson(
+          : _i5.Projects.fromJson(
               (jsonSerialization['project'] as Map<String, dynamic>)),
       $_projectsInvoicesProjectsId:
           jsonSerialization['_projectsInvoicesProjectsId'] as int?,
@@ -171,13 +179,13 @@ abstract class Invoices
 
   String dirMatriz;
 
-  DateTime fechaEmision;
+  String fechaEmision;
 
   String dirEstablecimiento;
 
-  String? contribuyenteEspecial;
+  String contribuyenteEspecial;
 
-  String? obligadoContabilidad;
+  String obligadoContabilidad;
 
   String tipoIdentificacionComprador;
 
@@ -203,9 +211,13 @@ abstract class Invoices
 
   List<_i2.InvoiceDetail>? detalles;
 
-  String? numeroAutorizacion;
+  List<_i3.Pago>? pagos;
 
-  DateTime? fechaAutorizacion;
+  List<_i4.InvoiceInfoAdicional>? infoAdicional;
+
+  String numeroAutorizacion;
+
+  String fechaAutorizacion;
 
   String categoria;
 
@@ -215,7 +227,7 @@ abstract class Invoices
 
   int projectId;
 
-  _i3.Projects? project;
+  _i5.Projects? project;
 
   final int? _projectsInvoicesProjectsId;
 
@@ -236,7 +248,7 @@ abstract class Invoices
     String? ptoEmi,
     String? secuencial,
     String? dirMatriz,
-    DateTime? fechaEmision,
+    String? fechaEmision,
     String? dirEstablecimiento,
     String? contribuyenteEspecial,
     String? obligadoContabilidad,
@@ -252,13 +264,15 @@ abstract class Invoices
     double? propina,
     double? importeTotal,
     List<_i2.InvoiceDetail>? detalles,
+    List<_i3.Pago>? pagos,
+    List<_i4.InvoiceInfoAdicional>? infoAdicional,
     String? numeroAutorizacion,
-    DateTime? fechaAutorizacion,
+    String? fechaAutorizacion,
     String? categoria,
     bool? estaSeleccionada,
     bool? certificada,
     int? projectId,
-    _i3.Projects? project,
+    _i5.Projects? project,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -273,12 +287,10 @@ abstract class Invoices
       'ptoEmi': ptoEmi,
       'secuencial': secuencial,
       'dirMatriz': dirMatriz,
-      'fechaEmision': fechaEmision.toJson(),
+      'fechaEmision': fechaEmision,
       'dirEstablecimiento': dirEstablecimiento,
-      if (contribuyenteEspecial != null)
-        'contribuyenteEspecial': contribuyenteEspecial,
-      if (obligadoContabilidad != null)
-        'obligadoContabilidad': obligadoContabilidad,
+      'contribuyenteEspecial': contribuyenteEspecial,
+      'obligadoContabilidad': obligadoContabilidad,
       'tipoIdentificacionComprador': tipoIdentificacionComprador,
       'razonSocialComprador': razonSocialComprador,
       'identificacionComprador': identificacionComprador,
@@ -292,9 +304,11 @@ abstract class Invoices
       'importeTotal': importeTotal,
       if (detalles != null)
         'detalles': detalles?.toJson(valueToJson: (v) => v.toJson()),
-      if (numeroAutorizacion != null) 'numeroAutorizacion': numeroAutorizacion,
-      if (fechaAutorizacion != null)
-        'fechaAutorizacion': fechaAutorizacion?.toJson(),
+      if (pagos != null) 'pagos': pagos?.toJson(valueToJson: (v) => v.toJson()),
+      if (infoAdicional != null)
+        'infoAdicional': infoAdicional?.toJson(valueToJson: (v) => v.toJson()),
+      'numeroAutorizacion': numeroAutorizacion,
+      'fechaAutorizacion': fechaAutorizacion,
       'categoria': categoria,
       'estaSeleccionada': estaSeleccionada,
       'certificada': certificada,
@@ -318,12 +332,10 @@ abstract class Invoices
       'ptoEmi': ptoEmi,
       'secuencial': secuencial,
       'dirMatriz': dirMatriz,
-      'fechaEmision': fechaEmision.toJson(),
+      'fechaEmision': fechaEmision,
       'dirEstablecimiento': dirEstablecimiento,
-      if (contribuyenteEspecial != null)
-        'contribuyenteEspecial': contribuyenteEspecial,
-      if (obligadoContabilidad != null)
-        'obligadoContabilidad': obligadoContabilidad,
+      'contribuyenteEspecial': contribuyenteEspecial,
+      'obligadoContabilidad': obligadoContabilidad,
       'tipoIdentificacionComprador': tipoIdentificacionComprador,
       'razonSocialComprador': razonSocialComprador,
       'identificacionComprador': identificacionComprador,
@@ -337,9 +349,13 @@ abstract class Invoices
       'importeTotal': importeTotal,
       if (detalles != null)
         'detalles': detalles?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
-      if (numeroAutorizacion != null) 'numeroAutorizacion': numeroAutorizacion,
-      if (fechaAutorizacion != null)
-        'fechaAutorizacion': fechaAutorizacion?.toJson(),
+      if (pagos != null)
+        'pagos': pagos?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (infoAdicional != null)
+        'infoAdicional':
+            infoAdicional?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      'numeroAutorizacion': numeroAutorizacion,
+      'fechaAutorizacion': fechaAutorizacion,
       'categoria': categoria,
       'estaSeleccionada': estaSeleccionada,
       'certificada': certificada,
@@ -350,10 +366,14 @@ abstract class Invoices
 
   static InvoicesInclude include({
     _i2.InvoiceDetailIncludeList? detalles,
-    _i3.ProjectsInclude? project,
+    _i3.PagoIncludeList? pagos,
+    _i4.InvoiceInfoAdicionalIncludeList? infoAdicional,
+    _i5.ProjectsInclude? project,
   }) {
     return InvoicesInclude._(
       detalles: detalles,
+      pagos: pagos,
+      infoAdicional: infoAdicional,
       project: project,
     );
   }
@@ -398,10 +418,10 @@ class _InvoicesImpl extends Invoices {
     required String ptoEmi,
     required String secuencial,
     required String dirMatriz,
-    required DateTime fechaEmision,
+    required String fechaEmision,
     required String dirEstablecimiento,
-    String? contribuyenteEspecial,
-    String? obligadoContabilidad,
+    required String contribuyenteEspecial,
+    required String obligadoContabilidad,
     required String tipoIdentificacionComprador,
     required String razonSocialComprador,
     required String identificacionComprador,
@@ -414,13 +434,15 @@ class _InvoicesImpl extends Invoices {
     required double propina,
     required double importeTotal,
     List<_i2.InvoiceDetail>? detalles,
-    String? numeroAutorizacion,
-    DateTime? fechaAutorizacion,
+    List<_i3.Pago>? pagos,
+    List<_i4.InvoiceInfoAdicional>? infoAdicional,
+    required String numeroAutorizacion,
+    required String fechaAutorizacion,
     required String categoria,
     required bool estaSeleccionada,
     required bool certificada,
     required int projectId,
-    _i3.Projects? project,
+    _i5.Projects? project,
   }) : super._(
           id: id,
           razonSocial: razonSocial,
@@ -448,6 +470,8 @@ class _InvoicesImpl extends Invoices {
           propina: propina,
           importeTotal: importeTotal,
           detalles: detalles,
+          pagos: pagos,
+          infoAdicional: infoAdicional,
           numeroAutorizacion: numeroAutorizacion,
           fechaAutorizacion: fechaAutorizacion,
           categoria: categoria,
@@ -472,10 +496,10 @@ class _InvoicesImpl extends Invoices {
     String? ptoEmi,
     String? secuencial,
     String? dirMatriz,
-    DateTime? fechaEmision,
+    String? fechaEmision,
     String? dirEstablecimiento,
-    Object? contribuyenteEspecial = _Undefined,
-    Object? obligadoContabilidad = _Undefined,
+    String? contribuyenteEspecial,
+    String? obligadoContabilidad,
     String? tipoIdentificacionComprador,
     String? razonSocialComprador,
     String? identificacionComprador,
@@ -488,8 +512,10 @@ class _InvoicesImpl extends Invoices {
     double? propina,
     double? importeTotal,
     Object? detalles = _Undefined,
-    Object? numeroAutorizacion = _Undefined,
-    Object? fechaAutorizacion = _Undefined,
+    Object? pagos = _Undefined,
+    Object? infoAdicional = _Undefined,
+    String? numeroAutorizacion,
+    String? fechaAutorizacion,
     String? categoria,
     bool? estaSeleccionada,
     bool? certificada,
@@ -509,12 +535,9 @@ class _InvoicesImpl extends Invoices {
       dirMatriz: dirMatriz ?? this.dirMatriz,
       fechaEmision: fechaEmision ?? this.fechaEmision,
       dirEstablecimiento: dirEstablecimiento ?? this.dirEstablecimiento,
-      contribuyenteEspecial: contribuyenteEspecial is String?
-          ? contribuyenteEspecial
-          : this.contribuyenteEspecial,
-      obligadoContabilidad: obligadoContabilidad is String?
-          ? obligadoContabilidad
-          : this.obligadoContabilidad,
+      contribuyenteEspecial:
+          contribuyenteEspecial ?? this.contribuyenteEspecial,
+      obligadoContabilidad: obligadoContabilidad ?? this.obligadoContabilidad,
       tipoIdentificacionComprador:
           tipoIdentificacionComprador ?? this.tipoIdentificacionComprador,
       razonSocialComprador: razonSocialComprador ?? this.razonSocialComprador,
@@ -531,17 +554,19 @@ class _InvoicesImpl extends Invoices {
       detalles: detalles is List<_i2.InvoiceDetail>?
           ? detalles
           : this.detalles?.map((e0) => e0.copyWith()).toList(),
-      numeroAutorizacion: numeroAutorizacion is String?
-          ? numeroAutorizacion
-          : this.numeroAutorizacion,
-      fechaAutorizacion: fechaAutorizacion is DateTime?
-          ? fechaAutorizacion
-          : this.fechaAutorizacion,
+      pagos: pagos is List<_i3.Pago>?
+          ? pagos
+          : this.pagos?.map((e0) => e0.copyWith()).toList(),
+      infoAdicional: infoAdicional is List<_i4.InvoiceInfoAdicional>?
+          ? infoAdicional
+          : this.infoAdicional?.map((e0) => e0.copyWith()).toList(),
+      numeroAutorizacion: numeroAutorizacion ?? this.numeroAutorizacion,
+      fechaAutorizacion: fechaAutorizacion ?? this.fechaAutorizacion,
       categoria: categoria ?? this.categoria,
       estaSeleccionada: estaSeleccionada ?? this.estaSeleccionada,
       certificada: certificada ?? this.certificada,
       projectId: projectId ?? this.projectId,
-      project: project is _i3.Projects? ? project : this.project?.copyWith(),
+      project: project is _i5.Projects? ? project : this.project?.copyWith(),
       $_projectsInvoicesProjectsId: this._projectsInvoicesProjectsId,
     );
   }
@@ -559,10 +584,10 @@ class InvoicesImplicit extends _InvoicesImpl {
     required String ptoEmi,
     required String secuencial,
     required String dirMatriz,
-    required DateTime fechaEmision,
+    required String fechaEmision,
     required String dirEstablecimiento,
-    String? contribuyenteEspecial,
-    String? obligadoContabilidad,
+    required String contribuyenteEspecial,
+    required String obligadoContabilidad,
     required String tipoIdentificacionComprador,
     required String razonSocialComprador,
     required String identificacionComprador,
@@ -575,13 +600,15 @@ class InvoicesImplicit extends _InvoicesImpl {
     required double propina,
     required double importeTotal,
     List<_i2.InvoiceDetail>? detalles,
-    String? numeroAutorizacion,
-    DateTime? fechaAutorizacion,
+    List<_i3.Pago>? pagos,
+    List<_i4.InvoiceInfoAdicional>? infoAdicional,
+    required String numeroAutorizacion,
+    required String fechaAutorizacion,
     required String categoria,
     required bool estaSeleccionada,
     required bool certificada,
     required int projectId,
-    _i3.Projects? project,
+    _i5.Projects? project,
     int? $_projectsInvoicesProjectsId,
   })  : _projectsInvoicesProjectsId = $_projectsInvoicesProjectsId,
         super(
@@ -611,6 +638,8 @@ class InvoicesImplicit extends _InvoicesImpl {
           propina: propina,
           importeTotal: importeTotal,
           detalles: detalles,
+          pagos: pagos,
+          infoAdicional: infoAdicional,
           numeroAutorizacion: numeroAutorizacion,
           fechaAutorizacion: fechaAutorizacion,
           categoria: categoria,
@@ -651,6 +680,8 @@ class InvoicesImplicit extends _InvoicesImpl {
       propina: invoices.propina,
       importeTotal: invoices.importeTotal,
       detalles: invoices.detalles,
+      pagos: invoices.pagos,
+      infoAdicional: invoices.infoAdicional,
       numeroAutorizacion: invoices.numeroAutorizacion,
       fechaAutorizacion: invoices.fechaAutorizacion,
       categoria: invoices.categoria,
@@ -704,7 +735,7 @@ class InvoicesTable extends _i1.Table<int?> {
       'dirMatriz',
       this,
     );
-    fechaEmision = _i1.ColumnDateTime(
+    fechaEmision = _i1.ColumnString(
       'fechaEmision',
       this,
     );
@@ -768,7 +799,7 @@ class InvoicesTable extends _i1.Table<int?> {
       'numeroAutorizacion',
       this,
     );
-    fechaAutorizacion = _i1.ColumnDateTime(
+    fechaAutorizacion = _i1.ColumnString(
       'fechaAutorizacion',
       this,
     );
@@ -812,7 +843,7 @@ class InvoicesTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString dirMatriz;
 
-  late final _i1.ColumnDateTime fechaEmision;
+  late final _i1.ColumnString fechaEmision;
 
   late final _i1.ColumnString dirEstablecimiento;
 
@@ -846,9 +877,17 @@ class InvoicesTable extends _i1.Table<int?> {
 
   _i1.ManyRelation<_i2.InvoiceDetailTable>? _detalles;
 
+  _i3.PagoTable? ___pagos;
+
+  _i1.ManyRelation<_i3.PagoTable>? _pagos;
+
+  _i4.InvoiceInfoAdicionalTable? ___infoAdicional;
+
+  _i1.ManyRelation<_i4.InvoiceInfoAdicionalTable>? _infoAdicional;
+
   late final _i1.ColumnString numeroAutorizacion;
 
-  late final _i1.ColumnDateTime fechaAutorizacion;
+  late final _i1.ColumnString fechaAutorizacion;
 
   late final _i1.ColumnString categoria;
 
@@ -858,7 +897,7 @@ class InvoicesTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt projectId;
 
-  _i3.ProjectsTable? _project;
+  _i5.ProjectsTable? _project;
 
   late final _i1.ColumnInt $_projectsInvoicesProjectsId;
 
@@ -875,15 +914,41 @@ class InvoicesTable extends _i1.Table<int?> {
     return ___detalles!;
   }
 
-  _i3.ProjectsTable get project {
+  _i3.PagoTable get __pagos {
+    if (___pagos != null) return ___pagos!;
+    ___pagos = _i1.createRelationTable(
+      relationFieldName: '__pagos',
+      field: Invoices.t.id,
+      foreignField: _i3.Pago.t.invoiceId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.PagoTable(tableRelation: foreignTableRelation),
+    );
+    return ___pagos!;
+  }
+
+  _i4.InvoiceInfoAdicionalTable get __infoAdicional {
+    if (___infoAdicional != null) return ___infoAdicional!;
+    ___infoAdicional = _i1.createRelationTable(
+      relationFieldName: '__infoAdicional',
+      field: Invoices.t.id,
+      foreignField: _i4.InvoiceInfoAdicional.t.invoiceId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i4.InvoiceInfoAdicionalTable(tableRelation: foreignTableRelation),
+    );
+    return ___infoAdicional!;
+  }
+
+  _i5.ProjectsTable get project {
     if (_project != null) return _project!;
     _project = _i1.createRelationTable(
       relationFieldName: 'project',
       field: Invoices.t.projectId,
-      foreignField: _i3.Projects.t.id,
+      foreignField: _i5.Projects.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.ProjectsTable(tableRelation: foreignTableRelation),
+          _i5.ProjectsTable(tableRelation: foreignTableRelation),
     );
     return _project!;
   }
@@ -904,6 +969,42 @@ class InvoicesTable extends _i1.Table<int?> {
           tableRelation: relationTable.tableRelation!.lastRelation),
     );
     return _detalles!;
+  }
+
+  _i1.ManyRelation<_i3.PagoTable> get pagos {
+    if (_pagos != null) return _pagos!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'pagos',
+      field: Invoices.t.id,
+      foreignField: _i3.Pago.t.invoiceId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.PagoTable(tableRelation: foreignTableRelation),
+    );
+    _pagos = _i1.ManyRelation<_i3.PagoTable>(
+      tableWithRelations: relationTable,
+      table: _i3.PagoTable(
+          tableRelation: relationTable.tableRelation!.lastRelation),
+    );
+    return _pagos!;
+  }
+
+  _i1.ManyRelation<_i4.InvoiceInfoAdicionalTable> get infoAdicional {
+    if (_infoAdicional != null) return _infoAdicional!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'infoAdicional',
+      field: Invoices.t.id,
+      foreignField: _i4.InvoiceInfoAdicional.t.invoiceId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i4.InvoiceInfoAdicionalTable(tableRelation: foreignTableRelation),
+    );
+    _infoAdicional = _i1.ManyRelation<_i4.InvoiceInfoAdicionalTable>(
+      tableWithRelations: relationTable,
+      table: _i4.InvoiceInfoAdicionalTable(
+          tableRelation: relationTable.tableRelation!.lastRelation),
+    );
+    return _infoAdicional!;
   }
 
   @override
@@ -982,6 +1083,12 @@ class InvoicesTable extends _i1.Table<int?> {
     if (relationField == 'detalles') {
       return __detalles;
     }
+    if (relationField == 'pagos') {
+      return __pagos;
+    }
+    if (relationField == 'infoAdicional') {
+      return __infoAdicional;
+    }
     if (relationField == 'project') {
       return project;
     }
@@ -992,19 +1099,29 @@ class InvoicesTable extends _i1.Table<int?> {
 class InvoicesInclude extends _i1.IncludeObject {
   InvoicesInclude._({
     _i2.InvoiceDetailIncludeList? detalles,
-    _i3.ProjectsInclude? project,
+    _i3.PagoIncludeList? pagos,
+    _i4.InvoiceInfoAdicionalIncludeList? infoAdicional,
+    _i5.ProjectsInclude? project,
   }) {
     _detalles = detalles;
+    _pagos = pagos;
+    _infoAdicional = infoAdicional;
     _project = project;
   }
 
   _i2.InvoiceDetailIncludeList? _detalles;
 
-  _i3.ProjectsInclude? _project;
+  _i3.PagoIncludeList? _pagos;
+
+  _i4.InvoiceInfoAdicionalIncludeList? _infoAdicional;
+
+  _i5.ProjectsInclude? _project;
 
   @override
   Map<String, _i1.Include?> get includes => {
         'detalles': _detalles,
+        'pagos': _pagos,
+        'infoAdicional': _infoAdicional,
         'project': _project,
       };
 
@@ -1038,6 +1155,10 @@ class InvoicesRepository {
   final attach = const InvoicesAttachRepository._();
 
   final attachRow = const InvoicesAttachRowRepository._();
+
+  final detach = const InvoicesDetachRepository._();
+
+  final detachRow = const InvoicesDetachRowRepository._();
 
   /// Returns a list of [Invoices]s matching the given query parameters.
   ///
@@ -1281,6 +1402,54 @@ class InvoicesAttachRepository {
       transaction: transaction,
     );
   }
+
+  /// Creates a relation between this [Invoices] and the given [Pago]s
+  /// by setting each [Pago]'s foreign key `invoiceId` to refer to this [Invoices].
+  Future<void> pagos(
+    _i1.Session session,
+    Invoices invoices,
+    List<_i3.Pago> pago, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (pago.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('pago.id');
+    }
+    if (invoices.id == null) {
+      throw ArgumentError.notNull('invoices.id');
+    }
+
+    var $pago = pago.map((e) => e.copyWith(invoiceId: invoices.id)).toList();
+    await session.db.update<_i3.Pago>(
+      $pago,
+      columns: [_i3.Pago.t.invoiceId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Invoices] and the given [InvoiceInfoAdicional]s
+  /// by setting each [InvoiceInfoAdicional]'s foreign key `invoiceId` to refer to this [Invoices].
+  Future<void> infoAdicional(
+    _i1.Session session,
+    Invoices invoices,
+    List<_i4.InvoiceInfoAdicional> invoiceInfoAdicional, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (invoiceInfoAdicional.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('invoiceInfoAdicional.id');
+    }
+    if (invoices.id == null) {
+      throw ArgumentError.notNull('invoices.id');
+    }
+
+    var $invoiceInfoAdicional = invoiceInfoAdicional
+        .map((e) => e.copyWith(invoiceId: invoices.id))
+        .toList();
+    await session.db.update<_i4.InvoiceInfoAdicional>(
+      $invoiceInfoAdicional,
+      columns: [_i4.InvoiceInfoAdicional.t.invoiceId],
+      transaction: transaction,
+    );
+  }
 }
 
 class InvoicesAttachRowRepository {
@@ -1291,7 +1460,7 @@ class InvoicesAttachRowRepository {
   Future<void> project(
     _i1.Session session,
     Invoices invoices,
-    _i3.Projects project, {
+    _i5.Projects project, {
     _i1.Transaction? transaction,
   }) async {
     if (invoices.id == null) {
@@ -1328,6 +1497,105 @@ class InvoicesAttachRowRepository {
     await session.db.updateRow<_i2.InvoiceDetail>(
       $invoiceDetail,
       columns: [_i2.InvoiceDetail.t.invoiceId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Invoices] and the given [Pago]
+  /// by setting the [Pago]'s foreign key `invoiceId` to refer to this [Invoices].
+  Future<void> pagos(
+    _i1.Session session,
+    Invoices invoices,
+    _i3.Pago pago, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (pago.id == null) {
+      throw ArgumentError.notNull('pago.id');
+    }
+    if (invoices.id == null) {
+      throw ArgumentError.notNull('invoices.id');
+    }
+
+    var $pago = pago.copyWith(invoiceId: invoices.id);
+    await session.db.updateRow<_i3.Pago>(
+      $pago,
+      columns: [_i3.Pago.t.invoiceId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Invoices] and the given [InvoiceInfoAdicional]
+  /// by setting the [InvoiceInfoAdicional]'s foreign key `invoiceId` to refer to this [Invoices].
+  Future<void> infoAdicional(
+    _i1.Session session,
+    Invoices invoices,
+    _i4.InvoiceInfoAdicional invoiceInfoAdicional, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (invoiceInfoAdicional.id == null) {
+      throw ArgumentError.notNull('invoiceInfoAdicional.id');
+    }
+    if (invoices.id == null) {
+      throw ArgumentError.notNull('invoices.id');
+    }
+
+    var $invoiceInfoAdicional =
+        invoiceInfoAdicional.copyWith(invoiceId: invoices.id);
+    await session.db.updateRow<_i4.InvoiceInfoAdicional>(
+      $invoiceInfoAdicional,
+      columns: [_i4.InvoiceInfoAdicional.t.invoiceId],
+      transaction: transaction,
+    );
+  }
+}
+
+class InvoicesDetachRepository {
+  const InvoicesDetachRepository._();
+
+  /// Detaches the relation between this [Invoices] and the given [Pago]
+  /// by setting the [Pago]'s foreign key `invoiceId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> pagos(
+    _i1.Session session,
+    List<_i3.Pago> pago, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (pago.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('pago.id');
+    }
+
+    var $pago = pago.map((e) => e.copyWith(invoiceId: null)).toList();
+    await session.db.update<_i3.Pago>(
+      $pago,
+      columns: [_i3.Pago.t.invoiceId],
+      transaction: transaction,
+    );
+  }
+}
+
+class InvoicesDetachRowRepository {
+  const InvoicesDetachRowRepository._();
+
+  /// Detaches the relation between this [Invoices] and the given [Pago]
+  /// by setting the [Pago]'s foreign key `invoiceId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> pagos(
+    _i1.Session session,
+    _i3.Pago pago, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (pago.id == null) {
+      throw ArgumentError.notNull('pago.id');
+    }
+
+    var $pago = pago.copyWith(invoiceId: null);
+    await session.db.updateRow<_i3.Pago>(
+      $pago,
+      columns: [_i3.Pago.t.invoiceId],
       transaction: transaction,
     );
   }

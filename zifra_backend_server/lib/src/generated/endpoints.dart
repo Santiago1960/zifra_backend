@@ -12,6 +12,9 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../greeting_endpoint.dart' as _i2;
 import '../invoices_endpoint.dart' as _i3;
+import '../projects_endpoint.dart' as _i4;
+import 'package:zifra_backend_server/src/generated/invoices.dart' as _i5;
+import 'package:zifra_backend_server/src/generated/projects.dart' as _i6;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -27,6 +30,12 @@ class Endpoints extends _i1.EndpointDispatch {
         ..initialize(
           server,
           'invoices',
+          null,
+        ),
+      'projects': _i4.ProjectsEndpoint()
+        ..initialize(
+          server,
+          'projects',
           null,
         ),
     };
@@ -75,6 +84,48 @@ class Endpoints extends _i1.EndpointDispatch {
                   .getOpenProjectInvoices(
             session,
             params['rucBeneficiario'],
+          ),
+        ),
+        'saveInvoices': _i1.MethodConnector(
+          name: 'saveInvoices',
+          params: {
+            'invoices': _i1.ParameterDescription(
+              name: 'invoices',
+              type: _i1.getType<List<_i5.Invoices>>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['invoices'] as _i3.InvoicesEndpoint).saveInvoices(
+            session,
+            params['invoices'],
+          ),
+        ),
+      },
+    );
+    connectors['projects'] = _i1.EndpointConnector(
+      name: 'projects',
+      endpoint: endpoints['projects']!,
+      methodConnectors: {
+        'createProject': _i1.MethodConnector(
+          name: 'createProject',
+          params: {
+            'project': _i1.ParameterDescription(
+              name: 'project',
+              type: _i1.getType<_i6.Projects>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['projects'] as _i4.ProjectsEndpoint).createProject(
+            session,
+            params['project'],
           ),
         )
       },

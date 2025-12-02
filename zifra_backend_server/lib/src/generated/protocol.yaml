@@ -2,3 +2,6 @@ greeting:
   - hello:
 invoices:
   - getOpenProjectInvoices:
+  - saveInvoices:
+projects:
+  - createProject:

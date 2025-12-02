@@ -1,0 +1,3 @@
+exception: ProjectException
+fields:
+  message: String

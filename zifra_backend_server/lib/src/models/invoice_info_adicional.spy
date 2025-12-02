@@ -1,0 +1,8 @@
+class: InvoiceInfoAdicional
+table: invoice_info_adicional
+fields:
+  clave: String
+  valor: String
+  
+  # Relación con el padre (Foreign Key)
+  invoice: Invoices?, relation(name=invoice_info_adicional)

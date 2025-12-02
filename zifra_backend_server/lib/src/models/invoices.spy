@@ -14,10 +14,10 @@ fields:
   dirMatriz: String
 
   # Info factura
-  fechaEmision: DateTime
+  fechaEmision: String
   dirEstablecimiento: String
-  contribuyenteEspecial: String?
-  obligadoContabilidad: String?
+  contribuyenteEspecial: String
+  obligadoContabilidad: String
   tipoIdentificacionComprador: String
   razonSocialComprador: String
   identificacionComprador: String
@@ -34,10 +34,12 @@ fields:
 
   # Relación inversa (para devolver la lista completa al frontend)
   detalles: List<InvoiceDetail>?, relation(name=invoice_details)
+  pagos: List<Pago>?, relation(name=invoice_pagos)
+  infoAdicional: List<InvoiceInfoAdicional>?, relation(name=invoice_info_adicional)
 
   # Otros
-  numeroAutorizacion: String?
-  fechaAutorizacion: DateTime?
+  numeroAutorizacion: String
+  fechaAutorizacion: String
   categoria: String
   estaSeleccionada: bool
   certificada: bool

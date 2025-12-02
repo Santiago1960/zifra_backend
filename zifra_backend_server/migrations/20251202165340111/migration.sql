@@ -1,18 +1,13 @@
 BEGIN;
 
---
--- ACTION ALTER TABLE
---
-ALTER TABLE "invoice_detail" DROP CONSTRAINT IF EXISTS "invoice_detail_fk_1";
-ALTER TABLE "invoice_detail" DROP COLUMN "_invoicesDetallesInvoicesId";
 
 --
 -- MIGRATION VERSION FOR zifra_backend
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('zifra_backend', '20251127151801267', now())
+    VALUES ('zifra_backend', '20251202165340111', now())
     ON CONFLICT ("module")
-    DO UPDATE SET "version" = '20251127151801267', "timestamp" = now();
+    DO UPDATE SET "version" = '20251202165340111', "timestamp" = now();
 
 --
 -- MIGRATION VERSION FOR serverpod
