@@ -11,7 +11,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'invoice_detail.dart' as _i2;
-import 'projects.dart' as _i3;
+import 'pago.dart' as _i3;
+import 'invoice_info_adicional.dart' as _i4;
+import 'projects.dart' as _i5;
 
 abstract class Invoices implements _i1.SerializableModel {
   Invoices._({
@@ -27,8 +29,8 @@ abstract class Invoices implements _i1.SerializableModel {
     required this.dirMatriz,
     required this.fechaEmision,
     required this.dirEstablecimiento,
-    this.contribuyenteEspecial,
-    this.obligadoContabilidad,
+    required this.contribuyenteEspecial,
+    required this.obligadoContabilidad,
     required this.tipoIdentificacionComprador,
     required this.razonSocialComprador,
     required this.identificacionComprador,
@@ -41,8 +43,10 @@ abstract class Invoices implements _i1.SerializableModel {
     required this.propina,
     required this.importeTotal,
     this.detalles,
-    this.numeroAutorizacion,
-    this.fechaAutorizacion,
+    this.pagos,
+    this.infoAdicional,
+    required this.numeroAutorizacion,
+    required this.fechaAutorizacion,
     required this.categoria,
     required this.estaSeleccionada,
     required this.certificada,
@@ -61,10 +65,10 @@ abstract class Invoices implements _i1.SerializableModel {
     required String ptoEmi,
     required String secuencial,
     required String dirMatriz,
-    required DateTime fechaEmision,
+    required String fechaEmision,
     required String dirEstablecimiento,
-    String? contribuyenteEspecial,
-    String? obligadoContabilidad,
+    required String contribuyenteEspecial,
+    required String obligadoContabilidad,
     required String tipoIdentificacionComprador,
     required String razonSocialComprador,
     required String identificacionComprador,
@@ -77,13 +81,15 @@ abstract class Invoices implements _i1.SerializableModel {
     required double propina,
     required double importeTotal,
     List<_i2.InvoiceDetail>? detalles,
-    String? numeroAutorizacion,
-    DateTime? fechaAutorizacion,
+    List<_i3.Pago>? pagos,
+    List<_i4.InvoiceInfoAdicional>? infoAdicional,
+    required String numeroAutorizacion,
+    required String fechaAutorizacion,
     required String categoria,
     required bool estaSeleccionada,
     required bool certificada,
     required int projectId,
-    _i3.Projects? project,
+    _i5.Projects? project,
   }) = _InvoicesImpl;
 
   factory Invoices.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -98,13 +104,11 @@ abstract class Invoices implements _i1.SerializableModel {
       ptoEmi: jsonSerialization['ptoEmi'] as String,
       secuencial: jsonSerialization['secuencial'] as String,
       dirMatriz: jsonSerialization['dirMatriz'] as String,
-      fechaEmision:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['fechaEmision']),
+      fechaEmision: jsonSerialization['fechaEmision'] as String,
       dirEstablecimiento: jsonSerialization['dirEstablecimiento'] as String,
       contribuyenteEspecial:
-          jsonSerialization['contribuyenteEspecial'] as String?,
-      obligadoContabilidad:
-          jsonSerialization['obligadoContabilidad'] as String?,
+          jsonSerialization['contribuyenteEspecial'] as String,
+      obligadoContabilidad: jsonSerialization['obligadoContabilidad'] as String,
       tipoIdentificacionComprador:
           jsonSerialization['tipoIdentificacionComprador'] as String,
       razonSocialComprador: jsonSerialization['razonSocialComprador'] as String,
@@ -125,18 +129,22 @@ abstract class Invoices implements _i1.SerializableModel {
       detalles: (jsonSerialization['detalles'] as List?)
           ?.map((e) => _i2.InvoiceDetail.fromJson((e as Map<String, dynamic>)))
           .toList(),
-      numeroAutorizacion: jsonSerialization['numeroAutorizacion'] as String?,
-      fechaAutorizacion: jsonSerialization['fechaAutorizacion'] == null
-          ? null
-          : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['fechaAutorizacion']),
+      pagos: (jsonSerialization['pagos'] as List?)
+          ?.map((e) => _i3.Pago.fromJson((e as Map<String, dynamic>)))
+          .toList(),
+      infoAdicional: (jsonSerialization['infoAdicional'] as List?)
+          ?.map((e) =>
+              _i4.InvoiceInfoAdicional.fromJson((e as Map<String, dynamic>)))
+          .toList(),
+      numeroAutorizacion: jsonSerialization['numeroAutorizacion'] as String,
+      fechaAutorizacion: jsonSerialization['fechaAutorizacion'] as String,
       categoria: jsonSerialization['categoria'] as String,
       estaSeleccionada: jsonSerialization['estaSeleccionada'] as bool,
       certificada: jsonSerialization['certificada'] as bool,
       projectId: jsonSerialization['projectId'] as int,
       project: jsonSerialization['project'] == null
           ? null
-          : _i3.Projects.fromJson(
+          : _i5.Projects.fromJson(
               (jsonSerialization['project'] as Map<String, dynamic>)),
     );
   }
@@ -164,13 +172,13 @@ abstract class Invoices implements _i1.SerializableModel {
 
   String dirMatriz;
 
-  DateTime fechaEmision;
+  String fechaEmision;
 
   String dirEstablecimiento;
 
-  String? contribuyenteEspecial;
+  String contribuyenteEspecial;
 
-  String? obligadoContabilidad;
+  String obligadoContabilidad;
 
   String tipoIdentificacionComprador;
 
@@ -196,9 +204,13 @@ abstract class Invoices implements _i1.SerializableModel {
 
   List<_i2.InvoiceDetail>? detalles;
 
-  String? numeroAutorizacion;
+  List<_i3.Pago>? pagos;
 
-  DateTime? fechaAutorizacion;
+  List<_i4.InvoiceInfoAdicional>? infoAdicional;
+
+  String numeroAutorizacion;
+
+  String fechaAutorizacion;
 
   String categoria;
 
@@ -208,7 +220,7 @@ abstract class Invoices implements _i1.SerializableModel {
 
   int projectId;
 
-  _i3.Projects? project;
+  _i5.Projects? project;
 
   /// Returns a shallow copy of this [Invoices]
   /// with some or all fields replaced by the given arguments.
@@ -224,7 +236,7 @@ abstract class Invoices implements _i1.SerializableModel {
     String? ptoEmi,
     String? secuencial,
     String? dirMatriz,
-    DateTime? fechaEmision,
+    String? fechaEmision,
     String? dirEstablecimiento,
     String? contribuyenteEspecial,
     String? obligadoContabilidad,
@@ -240,13 +252,15 @@ abstract class Invoices implements _i1.SerializableModel {
     double? propina,
     double? importeTotal,
     List<_i2.InvoiceDetail>? detalles,
+    List<_i3.Pago>? pagos,
+    List<_i4.InvoiceInfoAdicional>? infoAdicional,
     String? numeroAutorizacion,
-    DateTime? fechaAutorizacion,
+    String? fechaAutorizacion,
     String? categoria,
     bool? estaSeleccionada,
     bool? certificada,
     int? projectId,
-    _i3.Projects? project,
+    _i5.Projects? project,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -261,12 +275,10 @@ abstract class Invoices implements _i1.SerializableModel {
       'ptoEmi': ptoEmi,
       'secuencial': secuencial,
       'dirMatriz': dirMatriz,
-      'fechaEmision': fechaEmision.toJson(),
+      'fechaEmision': fechaEmision,
       'dirEstablecimiento': dirEstablecimiento,
-      if (contribuyenteEspecial != null)
-        'contribuyenteEspecial': contribuyenteEspecial,
-      if (obligadoContabilidad != null)
-        'obligadoContabilidad': obligadoContabilidad,
+      'contribuyenteEspecial': contribuyenteEspecial,
+      'obligadoContabilidad': obligadoContabilidad,
       'tipoIdentificacionComprador': tipoIdentificacionComprador,
       'razonSocialComprador': razonSocialComprador,
       'identificacionComprador': identificacionComprador,
@@ -280,9 +292,11 @@ abstract class Invoices implements _i1.SerializableModel {
       'importeTotal': importeTotal,
       if (detalles != null)
         'detalles': detalles?.toJson(valueToJson: (v) => v.toJson()),
-      if (numeroAutorizacion != null) 'numeroAutorizacion': numeroAutorizacion,
-      if (fechaAutorizacion != null)
-        'fechaAutorizacion': fechaAutorizacion?.toJson(),
+      if (pagos != null) 'pagos': pagos?.toJson(valueToJson: (v) => v.toJson()),
+      if (infoAdicional != null)
+        'infoAdicional': infoAdicional?.toJson(valueToJson: (v) => v.toJson()),
+      'numeroAutorizacion': numeroAutorizacion,
+      'fechaAutorizacion': fechaAutorizacion,
       'categoria': categoria,
       'estaSeleccionada': estaSeleccionada,
       'certificada': certificada,
@@ -311,10 +325,10 @@ class _InvoicesImpl extends Invoices {
     required String ptoEmi,
     required String secuencial,
     required String dirMatriz,
-    required DateTime fechaEmision,
+    required String fechaEmision,
     required String dirEstablecimiento,
-    String? contribuyenteEspecial,
-    String? obligadoContabilidad,
+    required String contribuyenteEspecial,
+    required String obligadoContabilidad,
     required String tipoIdentificacionComprador,
     required String razonSocialComprador,
     required String identificacionComprador,
@@ -327,13 +341,15 @@ class _InvoicesImpl extends Invoices {
     required double propina,
     required double importeTotal,
     List<_i2.InvoiceDetail>? detalles,
-    String? numeroAutorizacion,
-    DateTime? fechaAutorizacion,
+    List<_i3.Pago>? pagos,
+    List<_i4.InvoiceInfoAdicional>? infoAdicional,
+    required String numeroAutorizacion,
+    required String fechaAutorizacion,
     required String categoria,
     required bool estaSeleccionada,
     required bool certificada,
     required int projectId,
-    _i3.Projects? project,
+    _i5.Projects? project,
   }) : super._(
           id: id,
           razonSocial: razonSocial,
@@ -361,6 +377,8 @@ class _InvoicesImpl extends Invoices {
           propina: propina,
           importeTotal: importeTotal,
           detalles: detalles,
+          pagos: pagos,
+          infoAdicional: infoAdicional,
           numeroAutorizacion: numeroAutorizacion,
           fechaAutorizacion: fechaAutorizacion,
           categoria: categoria,
@@ -385,10 +403,10 @@ class _InvoicesImpl extends Invoices {
     String? ptoEmi,
     String? secuencial,
     String? dirMatriz,
-    DateTime? fechaEmision,
+    String? fechaEmision,
     String? dirEstablecimiento,
-    Object? contribuyenteEspecial = _Undefined,
-    Object? obligadoContabilidad = _Undefined,
+    String? contribuyenteEspecial,
+    String? obligadoContabilidad,
     String? tipoIdentificacionComprador,
     String? razonSocialComprador,
     String? identificacionComprador,
@@ -401,8 +419,10 @@ class _InvoicesImpl extends Invoices {
     double? propina,
     double? importeTotal,
     Object? detalles = _Undefined,
-    Object? numeroAutorizacion = _Undefined,
-    Object? fechaAutorizacion = _Undefined,
+    Object? pagos = _Undefined,
+    Object? infoAdicional = _Undefined,
+    String? numeroAutorizacion,
+    String? fechaAutorizacion,
     String? categoria,
     bool? estaSeleccionada,
     bool? certificada,
@@ -422,12 +442,9 @@ class _InvoicesImpl extends Invoices {
       dirMatriz: dirMatriz ?? this.dirMatriz,
       fechaEmision: fechaEmision ?? this.fechaEmision,
       dirEstablecimiento: dirEstablecimiento ?? this.dirEstablecimiento,
-      contribuyenteEspecial: contribuyenteEspecial is String?
-          ? contribuyenteEspecial
-          : this.contribuyenteEspecial,
-      obligadoContabilidad: obligadoContabilidad is String?
-          ? obligadoContabilidad
-          : this.obligadoContabilidad,
+      contribuyenteEspecial:
+          contribuyenteEspecial ?? this.contribuyenteEspecial,
+      obligadoContabilidad: obligadoContabilidad ?? this.obligadoContabilidad,
       tipoIdentificacionComprador:
           tipoIdentificacionComprador ?? this.tipoIdentificacionComprador,
       razonSocialComprador: razonSocialComprador ?? this.razonSocialComprador,
@@ -444,17 +461,19 @@ class _InvoicesImpl extends Invoices {
       detalles: detalles is List<_i2.InvoiceDetail>?
           ? detalles
           : this.detalles?.map((e0) => e0.copyWith()).toList(),
-      numeroAutorizacion: numeroAutorizacion is String?
-          ? numeroAutorizacion
-          : this.numeroAutorizacion,
-      fechaAutorizacion: fechaAutorizacion is DateTime?
-          ? fechaAutorizacion
-          : this.fechaAutorizacion,
+      pagos: pagos is List<_i3.Pago>?
+          ? pagos
+          : this.pagos?.map((e0) => e0.copyWith()).toList(),
+      infoAdicional: infoAdicional is List<_i4.InvoiceInfoAdicional>?
+          ? infoAdicional
+          : this.infoAdicional?.map((e0) => e0.copyWith()).toList(),
+      numeroAutorizacion: numeroAutorizacion ?? this.numeroAutorizacion,
+      fechaAutorizacion: fechaAutorizacion ?? this.fechaAutorizacion,
       categoria: categoria ?? this.categoria,
       estaSeleccionada: estaSeleccionada ?? this.estaSeleccionada,
       certificada: certificada ?? this.certificada,
       projectId: projectId ?? this.projectId,
-      project: project is _i3.Projects? ? project : this.project?.copyWith(),
+      project: project is _i5.Projects? ? project : this.project?.copyWith(),
     );
   }
 }

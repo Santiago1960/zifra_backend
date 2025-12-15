@@ -13,7 +13,8 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
 import 'package:zifra_backend_client/src/protocol/greeting.dart' as _i3;
 import 'package:zifra_backend_client/src/protocol/invoices.dart' as _i4;
-import 'protocol.dart' as _i5;
+import 'package:zifra_backend_client/src/protocol/projects.dart' as _i5;
+import 'protocol.dart' as _i6;
 
 /// This is an example endpoint that returns a greeting message through
 /// its [hello] method.
@@ -47,6 +48,55 @@ class EndpointInvoices extends _i1.EndpointRef {
         'getOpenProjectInvoices',
         {'rucBeneficiario': rucBeneficiario},
       );
+
+  _i2.Future<String> saveInvoices(List<_i4.Invoices> invoices) =>
+      caller.callServerEndpoint<String>(
+        'invoices',
+        'saveInvoices',
+        {'invoices': invoices},
+      );
+
+  _i2.Future<List<_i4.Invoices>> getProjectInvoices(int projectId) =>
+      caller.callServerEndpoint<List<_i4.Invoices>>(
+        'invoices',
+        'getProjectInvoices',
+        {'projectId': projectId},
+      );
+
+  _i2.Future<String> createProjectWithInvoices(
+    _i5.Projects project,
+    List<_i4.Invoices> invoices,
+  ) =>
+      caller.callServerEndpoint<String>(
+        'invoices',
+        'createProjectWithInvoices',
+        {
+          'project': project,
+          'invoices': invoices,
+        },
+      );
+}
+
+/// {@category Endpoint}
+class EndpointProjects extends _i1.EndpointRef {
+  EndpointProjects(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'projects';
+
+  _i2.Future<int> createProject(_i5.Projects project) =>
+      caller.callServerEndpoint<int>(
+        'projects',
+        'createProject',
+        {'project': project},
+      );
+
+  _i2.Future<List<_i5.Projects>> getOpenProjects() =>
+      caller.callServerEndpoint<List<_i5.Projects>>(
+        'projects',
+        'getOpenProjects',
+        {},
+      );
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -65,7 +115,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i5.Protocol(),
+          _i6.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -77,16 +127,20 @@ class Client extends _i1.ServerpodClientShared {
         ) {
     greeting = EndpointGreeting(this);
     invoices = EndpointInvoices(this);
+    projects = EndpointProjects(this);
   }
 
   late final EndpointGreeting greeting;
 
   late final EndpointInvoices invoices;
 
+  late final EndpointProjects projects;
+
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
         'greeting': greeting,
         'invoices': invoices,
+        'projects': projects,
       };
 
   @override

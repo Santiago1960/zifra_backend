@@ -104,6 +104,50 @@ class Endpoints extends _i1.EndpointDispatch {
             params['invoices'],
           ),
         ),
+        'getProjectInvoices': _i1.MethodConnector(
+          name: 'getProjectInvoices',
+          params: {
+            'projectId': _i1.ParameterDescription(
+              name: 'projectId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['invoices'] as _i3.InvoicesEndpoint)
+                  .getProjectInvoices(
+            session,
+            params['projectId'],
+          ),
+        ),
+        'createProjectWithInvoices': _i1.MethodConnector(
+          name: 'createProjectWithInvoices',
+          params: {
+            'project': _i1.ParameterDescription(
+              name: 'project',
+              type: _i1.getType<_i6.Projects>(),
+              nullable: false,
+            ),
+            'invoices': _i1.ParameterDescription(
+              name: 'invoices',
+              type: _i1.getType<List<_i5.Invoices>>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['invoices'] as _i3.InvoicesEndpoint)
+                  .createProjectWithInvoices(
+            session,
+            params['project'],
+            params['invoices'],
+          ),
+        ),
       },
     );
     connectors['projects'] = _i1.EndpointConnector(
@@ -127,7 +171,17 @@ class Endpoints extends _i1.EndpointDispatch {
             session,
             params['project'],
           ),
-        )
+        ),
+        'getOpenProjects': _i1.MethodConnector(
+          name: 'getOpenProjects',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['projects'] as _i4.ProjectsEndpoint)
+                  .getOpenProjects(session),
+        ),
       },
     );
   }

@@ -19,6 +19,7 @@ import 'pago.dart' as _i7;
 import 'project_exception.dart' as _i8;
 import 'projects.dart' as _i9;
 import 'package:zifra_backend_server/src/generated/invoices.dart' as _i10;
+import 'package:zifra_backend_server/src/generated/projects.dart' as _i11;
 export 'greeting.dart';
 export 'invoice_detail.dart';
 export 'invoice_info_adicional.dart';
@@ -59,6 +60,12 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.text,
           isNullable: false,
           dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'codigoAuxiliar',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
         ),
         _i2.ColumnDefinition(
           name: 'descripcion',
@@ -646,6 +653,10 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (t == List<_i10.Invoices>) {
       return (data as List).map((e) => deserialize<_i10.Invoices>(e)).toList()
+          as T;
+    }
+    if (t == List<_i11.Projects>) {
+      return (data as List).map((e) => deserialize<_i11.Projects>(e)).toList()
           as T;
     }
     try {

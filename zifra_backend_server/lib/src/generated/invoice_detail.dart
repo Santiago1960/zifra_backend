@@ -21,6 +21,7 @@ abstract class InvoiceDetail
     required this.invoiceId,
     this.invoice,
     required this.codigoPrincipal,
+    this.codigoAuxiliar,
     required this.descripcion,
     required this.cantidad,
     required this.precioUnitario,
@@ -33,6 +34,7 @@ abstract class InvoiceDetail
     required int invoiceId,
     _i2.Invoices? invoice,
     required String codigoPrincipal,
+    String? codigoAuxiliar,
     required String descripcion,
     required double cantidad,
     required double precioUnitario,
@@ -49,6 +51,7 @@ abstract class InvoiceDetail
           : _i2.Invoices.fromJson(
               (jsonSerialization['invoice'] as Map<String, dynamic>)),
       codigoPrincipal: jsonSerialization['codigoPrincipal'] as String,
+      codigoAuxiliar: jsonSerialization['codigoAuxiliar'] as String?,
       descripcion: jsonSerialization['descripcion'] as String,
       cantidad: (jsonSerialization['cantidad'] as num).toDouble(),
       precioUnitario: (jsonSerialization['precioUnitario'] as num).toDouble(),
@@ -71,6 +74,8 @@ abstract class InvoiceDetail
 
   String codigoPrincipal;
 
+  String? codigoAuxiliar;
+
   String descripcion;
 
   double cantidad;
@@ -92,6 +97,7 @@ abstract class InvoiceDetail
     int? invoiceId,
     _i2.Invoices? invoice,
     String? codigoPrincipal,
+    String? codigoAuxiliar,
     String? descripcion,
     double? cantidad,
     double? precioUnitario,
@@ -105,6 +111,7 @@ abstract class InvoiceDetail
       'invoiceId': invoiceId,
       if (invoice != null) 'invoice': invoice?.toJson(),
       'codigoPrincipal': codigoPrincipal,
+      if (codigoAuxiliar != null) 'codigoAuxiliar': codigoAuxiliar,
       'descripcion': descripcion,
       'cantidad': cantidad,
       'precioUnitario': precioUnitario,
@@ -120,6 +127,7 @@ abstract class InvoiceDetail
       'invoiceId': invoiceId,
       if (invoice != null) 'invoice': invoice?.toJsonForProtocol(),
       'codigoPrincipal': codigoPrincipal,
+      if (codigoAuxiliar != null) 'codigoAuxiliar': codigoAuxiliar,
       'descripcion': descripcion,
       'cantidad': cantidad,
       'precioUnitario': precioUnitario,
@@ -166,6 +174,7 @@ class _InvoiceDetailImpl extends InvoiceDetail {
     required int invoiceId,
     _i2.Invoices? invoice,
     required String codigoPrincipal,
+    String? codigoAuxiliar,
     required String descripcion,
     required double cantidad,
     required double precioUnitario,
@@ -176,6 +185,7 @@ class _InvoiceDetailImpl extends InvoiceDetail {
           invoiceId: invoiceId,
           invoice: invoice,
           codigoPrincipal: codigoPrincipal,
+          codigoAuxiliar: codigoAuxiliar,
           descripcion: descripcion,
           cantidad: cantidad,
           precioUnitario: precioUnitario,
@@ -192,6 +202,7 @@ class _InvoiceDetailImpl extends InvoiceDetail {
     int? invoiceId,
     Object? invoice = _Undefined,
     String? codigoPrincipal,
+    Object? codigoAuxiliar = _Undefined,
     String? descripcion,
     double? cantidad,
     double? precioUnitario,
@@ -203,6 +214,8 @@ class _InvoiceDetailImpl extends InvoiceDetail {
       invoiceId: invoiceId ?? this.invoiceId,
       invoice: invoice is _i2.Invoices? ? invoice : this.invoice?.copyWith(),
       codigoPrincipal: codigoPrincipal ?? this.codigoPrincipal,
+      codigoAuxiliar:
+          codigoAuxiliar is String? ? codigoAuxiliar : this.codigoAuxiliar,
       descripcion: descripcion ?? this.descripcion,
       cantidad: cantidad ?? this.cantidad,
       precioUnitario: precioUnitario ?? this.precioUnitario,
@@ -222,6 +235,10 @@ class InvoiceDetailTable extends _i1.Table<int?> {
     );
     codigoPrincipal = _i1.ColumnString(
       'codigoPrincipal',
+      this,
+    );
+    codigoAuxiliar = _i1.ColumnString(
+      'codigoAuxiliar',
       this,
     );
     descripcion = _i1.ColumnString(
@@ -252,6 +269,8 @@ class InvoiceDetailTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString codigoPrincipal;
 
+  late final _i1.ColumnString codigoAuxiliar;
+
   late final _i1.ColumnString descripcion;
 
   late final _i1.ColumnDouble cantidad;
@@ -280,6 +299,7 @@ class InvoiceDetailTable extends _i1.Table<int?> {
         id,
         invoiceId,
         codigoPrincipal,
+        codigoAuxiliar,
         descripcion,
         cantidad,
         precioUnitario,

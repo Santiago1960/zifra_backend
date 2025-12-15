@@ -7,6 +7,7 @@ fields:
 
   # Datos del detalle
   codigoPrincipal: String
+  codigoAuxiliar: String?
   descripcion: String
   cantidad: double
   precioUnitario: double

@@ -3,5 +3,8 @@ greeting:
 invoices:
   - getOpenProjectInvoices:
   - saveInvoices:
+  - getProjectInvoices:
+  - createProjectWithInvoices:
 projects:
   - createProject:
+  - getOpenProjects:

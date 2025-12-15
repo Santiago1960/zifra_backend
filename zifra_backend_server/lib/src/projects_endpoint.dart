@@ -8,12 +8,6 @@ class ProjectsEndpoint extends Endpoint {
     project.nombre = project.nombre.trim();
     project.rucBeneficiario = project.rucBeneficiario?.trim();
 
-    print('Checking for duplicate project:');
-    print('Cliente: "${project.cliente}"');
-    print('Nombre: "${project.nombre}"');
-    print('RUC: "${project.rucBeneficiario}"');
-
-    // Check for duplicates (case-insensitive)
     final existingProject = await Projects.db.findFirstRow(
       session,
       where: (t) =>
@@ -38,5 +32,29 @@ class ProjectsEndpoint extends Endpoint {
 
     final insertedProject = await Projects.db.insertRow(session, project);
     return insertedProject.id!;
+  }
+
+  Future<List<Projects>> getOpenProjects(Session session) async {
+    // 1. Buscar proyectos abiertos
+    final openProjects = await Projects.db.find(
+      session,
+      where: (t) => t.isClosed.equals(false),
+    );
+
+    List<Projects> projectsWithInvoices = [];
+
+    // 2. Filtrar proyectos que tengan facturas
+    for (var project in openProjects) {
+      final invoiceCount = await Invoices.db.count(
+        session,
+        where: (t) => t.projectId.equals(project.id!),
+      );
+      
+      if (invoiceCount > 0) {
+        projectsWithInvoices.add(project);
+      }
+    }
+
+    return projectsWithInvoices;
   }
 }
