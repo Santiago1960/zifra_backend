@@ -1,0 +1,81 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "invoices",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "categoriaId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [
+          "categoryId"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "invoices_fk_0",
+            "columns": [
+              "projectId"
+            ],
+            "referenceTable": "projects",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "invoices_fk_1",
+            "columns": [
+              "_projectsInvoicesProjectsId"
+            ],
+            "referenceTable": "projects",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [
+          "invoices_fk_2",
+          "invoices_fk_0",
+          "invoices_fk_1"
+        ],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"categoryId\" of table \"invoices\" will be dropped.",
+            "table": "invoices",
+            "columns": [
+              "categoryId"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"categoryId\" of table \"invoices\" will be dropped.",
+      "table": "invoices",
+      "columns": [
+        "categoryId"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

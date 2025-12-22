@@ -32,6 +32,7 @@ class InvoicesEndpoint extends Endpoint {
       where: (t) => t.projectId.inSet(projectIds.toSet()),
       include: Invoices.include(
         detalles: InvoiceDetail.includeList(),
+        // NOTE: Not including category relation to ensure categoryId is sent
       ),
     );
 
@@ -91,6 +92,7 @@ class InvoicesEndpoint extends Endpoint {
 
     return 'OK';
   }
+
 
   Future<List<Invoices>> getProjectInvoices(Session session, int projectId) async {
     return await Invoices.db.find(
@@ -193,5 +195,26 @@ class InvoicesEndpoint extends Endpoint {
 
       return newProjectId.toString();
     });
+  }
+
+  Future<Invoices?> updateInvoiceCategory(
+    Session session,
+    String claveAcceso,
+    int? categoryId,
+  ) async {
+    final invoice = await Invoices.db.findFirstRow(
+      session,
+      where: (t) => t.claveAcceso.equals(claveAcceso),
+    );
+
+    if (invoice == null) {
+      return null;
+    }
+
+    final updatedInvoice = invoice.copyWith(categoryId: categoryId);
+    
+    await Invoices.db.updateRow(session, updatedInvoice);
+    
+    return updatedInvoice;
   }
 }

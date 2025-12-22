@@ -14,9 +14,10 @@
 import 'package:serverpod_test/serverpod_test.dart' as _i1;
 import 'package:serverpod/serverpod.dart' as _i2;
 import 'dart:async' as _i3;
-import 'package:zifra_backend_server/src/generated/greeting.dart' as _i4;
-import 'package:zifra_backend_server/src/generated/invoices.dart' as _i5;
-import 'package:zifra_backend_server/src/generated/projects.dart' as _i6;
+import 'package:zifra_backend_server/src/generated/category.dart' as _i4;
+import 'package:zifra_backend_server/src/generated/greeting.dart' as _i5;
+import 'package:zifra_backend_server/src/generated/invoices.dart' as _i6;
+import 'package:zifra_backend_server/src/generated/projects.dart' as _i7;
 import 'package:zifra_backend_server/src/generated/protocol.dart';
 import 'package:zifra_backend_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -103,6 +104,8 @@ void withServerpod(
 }
 
 class TestEndpoints {
+  late final _CategoryEndpoint category;
+
   late final _GreetingEndpoint greeting;
 
   late final _InvoicesEndpoint invoices;
@@ -117,6 +120,10 @@ class _InternalTestEndpoints extends TestEndpoints
     _i2.SerializationManager serializationManager,
     _i2.EndpointDispatch endpoints,
   ) {
+    category = _CategoryEndpoint(
+      endpoints,
+      serializationManager,
+    );
     greeting = _GreetingEndpoint(
       endpoints,
       serializationManager,
@@ -132,6 +139,133 @@ class _InternalTestEndpoints extends TestEndpoints
   }
 }
 
+class _CategoryEndpoint {
+  _CategoryEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<List<_i4.Category>> getCategories(
+    _i1.TestSessionBuilder sessionBuilder,
+    int userId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'category',
+        method: 'getCategories',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'category',
+          methodName: 'getCategories',
+          parameters: _i1.testObjectToJson({'userId': userId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<List<_i4.Category>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> addCategory(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i4.Category category,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'category',
+        method: 'addCategory',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'category',
+          methodName: 'addCategory',
+          parameters: _i1.testObjectToJson({'category': category}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> updateCategory(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i4.Category category,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'category',
+        method: 'updateCategory',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'category',
+          methodName: 'updateCategory',
+          parameters: _i1.testObjectToJson({'category': category}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> deleteCategory(
+    _i1.TestSessionBuilder sessionBuilder,
+    int id,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'category',
+        method: 'deleteCategory',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'category',
+          methodName: 'deleteCategory',
+          parameters: _i1.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _GreetingEndpoint {
   _GreetingEndpoint(
     this._endpointDispatch,
@@ -142,7 +276,7 @@ class _GreetingEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i4.Greeting> hello(
+  _i3.Future<_i5.Greeting> hello(
     _i1.TestSessionBuilder sessionBuilder,
     String name,
   ) async {
@@ -163,7 +297,7 @@ class _GreetingEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i4.Greeting>);
+        ) as _i3.Future<_i5.Greeting>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -182,7 +316,7 @@ class _InvoicesEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i5.Invoices>> getOpenProjectInvoices(
+  _i3.Future<List<_i6.Invoices>> getOpenProjectInvoices(
     _i1.TestSessionBuilder sessionBuilder,
     String rucBeneficiario,
   ) async {
@@ -204,7 +338,7 @@ class _InvoicesEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i5.Invoices>>);
+        ) as _i3.Future<List<_i6.Invoices>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -214,7 +348,7 @@ class _InvoicesEndpoint {
 
   _i3.Future<String> saveInvoices(
     _i1.TestSessionBuilder sessionBuilder,
-    List<_i5.Invoices> invoices,
+    List<_i6.Invoices> invoices,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -241,7 +375,7 @@ class _InvoicesEndpoint {
     });
   }
 
-  _i3.Future<List<_i5.Invoices>> getProjectInvoices(
+  _i3.Future<List<_i6.Invoices>> getProjectInvoices(
     _i1.TestSessionBuilder sessionBuilder,
     int projectId,
   ) async {
@@ -262,7 +396,7 @@ class _InvoicesEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i5.Invoices>>);
+        ) as _i3.Future<List<_i6.Invoices>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -272,8 +406,8 @@ class _InvoicesEndpoint {
 
   _i3.Future<String> createProjectWithInvoices(
     _i1.TestSessionBuilder sessionBuilder,
-    _i6.Projects project,
-    List<_i5.Invoices> invoices,
+    _i7.Projects project,
+    List<_i6.Invoices> invoices,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -302,6 +436,39 @@ class _InvoicesEndpoint {
       }
     });
   }
+
+  _i3.Future<_i6.Invoices?> updateInvoiceCategory(
+    _i1.TestSessionBuilder sessionBuilder,
+    String claveAcceso,
+    int? categoryId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'invoices',
+        method: 'updateInvoiceCategory',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'invoices',
+          methodName: 'updateInvoiceCategory',
+          parameters: _i1.testObjectToJson({
+            'claveAcceso': claveAcceso,
+            'categoryId': categoryId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i6.Invoices?>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }
 
 class _ProjectsEndpoint {
@@ -316,7 +483,7 @@ class _ProjectsEndpoint {
 
   _i3.Future<int> createProject(
     _i1.TestSessionBuilder sessionBuilder,
-    _i6.Projects project,
+    _i7.Projects project,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -343,7 +510,7 @@ class _ProjectsEndpoint {
     });
   }
 
-  _i3.Future<List<_i6.Projects>> getOpenProjects(
+  _i3.Future<List<_i7.Projects>> getOpenProjects(
       _i1.TestSessionBuilder sessionBuilder) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -362,7 +529,7 @@ class _ProjectsEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i6.Projects>>);
+        ) as _i3.Future<List<_i7.Projects>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

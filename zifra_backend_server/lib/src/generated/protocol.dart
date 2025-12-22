@@ -12,15 +12,18 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'package:serverpod/protocol.dart' as _i2;
 import 'greeting.dart' as _i3;
-import 'invoice_detail.dart' as _i4;
-import 'invoice_info_adicional.dart' as _i5;
-import 'invoices.dart' as _i6;
-import 'pago.dart' as _i7;
-import 'project_exception.dart' as _i8;
-import 'projects.dart' as _i9;
-import 'package:zifra_backend_server/src/generated/invoices.dart' as _i10;
-import 'package:zifra_backend_server/src/generated/projects.dart' as _i11;
+import 'category.dart' as _i4;
+import 'invoice_detail.dart' as _i5;
+import 'invoice_info_adicional.dart' as _i6;
+import 'invoices.dart' as _i7;
+import 'pago.dart' as _i8;
+import 'project_exception.dart' as _i9;
+import 'projects.dart' as _i10;
+import 'package:zifra_backend_server/src/generated/category.dart' as _i11;
+import 'package:zifra_backend_server/src/generated/invoices.dart' as _i12;
+import 'package:zifra_backend_server/src/generated/projects.dart' as _i13;
 export 'greeting.dart';
+export 'category.dart';
 export 'invoice_detail.dart';
 export 'invoice_info_adicional.dart';
 export 'invoices.dart';
@@ -36,6 +39,69 @@ class Protocol extends _i1.SerializationManagerServer {
   static final Protocol _instance = Protocol._();
 
   static final List<_i2.TableDefinition> targetTableDefinitions = [
+    _i2.TableDefinition(
+      name: 'category',
+      dartName: 'Category',
+      schema: 'public',
+      module: 'zifra_backend',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'category_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'userId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'name',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'color',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'isDeleted',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: true,
+          dartType: 'bool?',
+          columnDefault: 'false',
+        ),
+        _i2.ColumnDefinition(
+          name: 'deletedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'category_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        )
+      ],
+      managed: true,
+    ),
     _i2.TableDefinition(
       name: 'invoice_detail',
       dartName: 'InvoiceDetail',
@@ -358,12 +424,6 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String',
         ),
         _i2.ColumnDefinition(
-          name: 'categoria',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _i2.ColumnDefinition(
           name: 'estaSeleccionada',
           columnType: _i2.ColumnType.boolean,
           isNullable: false,
@@ -374,6 +434,12 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
+        ),
+        _i2.ColumnDefinition(
+          name: 'categoryId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
         ),
         _i2.ColumnDefinition(
           name: 'projectId',
@@ -587,76 +653,86 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i3.Greeting) {
       return _i3.Greeting.fromJson(data) as T;
     }
-    if (t == _i4.InvoiceDetail) {
-      return _i4.InvoiceDetail.fromJson(data) as T;
+    if (t == _i4.Category) {
+      return _i4.Category.fromJson(data) as T;
     }
-    if (t == _i5.InvoiceInfoAdicional) {
-      return _i5.InvoiceInfoAdicional.fromJson(data) as T;
+    if (t == _i5.InvoiceDetail) {
+      return _i5.InvoiceDetail.fromJson(data) as T;
     }
-    if (t == _i6.Invoices) {
-      return _i6.Invoices.fromJson(data) as T;
+    if (t == _i6.InvoiceInfoAdicional) {
+      return _i6.InvoiceInfoAdicional.fromJson(data) as T;
     }
-    if (t == _i7.Pago) {
-      return _i7.Pago.fromJson(data) as T;
+    if (t == _i7.Invoices) {
+      return _i7.Invoices.fromJson(data) as T;
     }
-    if (t == _i8.ProjectException) {
-      return _i8.ProjectException.fromJson(data) as T;
+    if (t == _i8.Pago) {
+      return _i8.Pago.fromJson(data) as T;
     }
-    if (t == _i9.Projects) {
-      return _i9.Projects.fromJson(data) as T;
+    if (t == _i9.ProjectException) {
+      return _i9.ProjectException.fromJson(data) as T;
+    }
+    if (t == _i10.Projects) {
+      return _i10.Projects.fromJson(data) as T;
     }
     if (t == _i1.getType<_i3.Greeting?>()) {
       return (data != null ? _i3.Greeting.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i4.InvoiceDetail?>()) {
-      return (data != null ? _i4.InvoiceDetail.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i4.Category?>()) {
+      return (data != null ? _i4.Category.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i5.InvoiceInfoAdicional?>()) {
-      return (data != null ? _i5.InvoiceInfoAdicional.fromJson(data) : null)
+    if (t == _i1.getType<_i5.InvoiceDetail?>()) {
+      return (data != null ? _i5.InvoiceDetail.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i6.InvoiceInfoAdicional?>()) {
+      return (data != null ? _i6.InvoiceInfoAdicional.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i6.Invoices?>()) {
-      return (data != null ? _i6.Invoices.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i7.Invoices?>()) {
+      return (data != null ? _i7.Invoices.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i7.Pago?>()) {
-      return (data != null ? _i7.Pago.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i8.Pago?>()) {
+      return (data != null ? _i8.Pago.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i8.ProjectException?>()) {
-      return (data != null ? _i8.ProjectException.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i9.ProjectException?>()) {
+      return (data != null ? _i9.ProjectException.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i9.Projects?>()) {
-      return (data != null ? _i9.Projects.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i10.Projects?>()) {
+      return (data != null ? _i10.Projects.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<List<_i4.InvoiceDetail>?>()) {
+    if (t == _i1.getType<List<_i5.InvoiceDetail>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i4.InvoiceDetail>(e))
+              .map((e) => deserialize<_i5.InvoiceDetail>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i7.Pago>?>()) {
+    if (t == _i1.getType<List<_i8.Pago>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i7.Pago>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i8.Pago>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i5.InvoiceInfoAdicional>?>()) {
+    if (t == _i1.getType<List<_i6.InvoiceInfoAdicional>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i5.InvoiceInfoAdicional>(e))
+              .map((e) => deserialize<_i6.InvoiceInfoAdicional>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i6.Invoices>?>()) {
+    if (t == _i1.getType<List<_i7.Invoices>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i6.Invoices>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i7.Invoices>(e)).toList()
           : null) as T;
     }
-    if (t == List<_i10.Invoices>) {
-      return (data as List).map((e) => deserialize<_i10.Invoices>(e)).toList()
+    if (t == List<_i11.Category>) {
+      return (data as List).map((e) => deserialize<_i11.Category>(e)).toList()
           as T;
     }
-    if (t == List<_i11.Projects>) {
-      return (data as List).map((e) => deserialize<_i11.Projects>(e)).toList()
+    if (t == List<_i12.Invoices>) {
+      return (data as List).map((e) => deserialize<_i12.Invoices>(e)).toList()
+          as T;
+    }
+    if (t == List<_i13.Projects>) {
+      return (data as List).map((e) => deserialize<_i13.Projects>(e)).toList()
           as T;
     }
     try {
@@ -672,22 +748,25 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i3.Greeting) {
       return 'Greeting';
     }
-    if (data is _i4.InvoiceDetail) {
+    if (data is _i4.Category) {
+      return 'Category';
+    }
+    if (data is _i5.InvoiceDetail) {
       return 'InvoiceDetail';
     }
-    if (data is _i5.InvoiceInfoAdicional) {
+    if (data is _i6.InvoiceInfoAdicional) {
       return 'InvoiceInfoAdicional';
     }
-    if (data is _i6.Invoices) {
+    if (data is _i7.Invoices) {
       return 'Invoices';
     }
-    if (data is _i7.Pago) {
+    if (data is _i8.Pago) {
       return 'Pago';
     }
-    if (data is _i8.ProjectException) {
+    if (data is _i9.ProjectException) {
       return 'ProjectException';
     }
-    if (data is _i9.Projects) {
+    if (data is _i10.Projects) {
       return 'Projects';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -706,23 +785,26 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'Greeting') {
       return deserialize<_i3.Greeting>(data['data']);
     }
+    if (dataClassName == 'Category') {
+      return deserialize<_i4.Category>(data['data']);
+    }
     if (dataClassName == 'InvoiceDetail') {
-      return deserialize<_i4.InvoiceDetail>(data['data']);
+      return deserialize<_i5.InvoiceDetail>(data['data']);
     }
     if (dataClassName == 'InvoiceInfoAdicional') {
-      return deserialize<_i5.InvoiceInfoAdicional>(data['data']);
+      return deserialize<_i6.InvoiceInfoAdicional>(data['data']);
     }
     if (dataClassName == 'Invoices') {
-      return deserialize<_i6.Invoices>(data['data']);
+      return deserialize<_i7.Invoices>(data['data']);
     }
     if (dataClassName == 'Pago') {
-      return deserialize<_i7.Pago>(data['data']);
+      return deserialize<_i8.Pago>(data['data']);
     }
     if (dataClassName == 'ProjectException') {
-      return deserialize<_i8.ProjectException>(data['data']);
+      return deserialize<_i9.ProjectException>(data['data']);
     }
     if (dataClassName == 'Projects') {
-      return deserialize<_i9.Projects>(data['data']);
+      return deserialize<_i10.Projects>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -740,16 +822,18 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
     switch (t) {
-      case _i4.InvoiceDetail:
-        return _i4.InvoiceDetail.t;
-      case _i5.InvoiceInfoAdicional:
-        return _i5.InvoiceInfoAdicional.t;
-      case _i6.Invoices:
-        return _i6.Invoices.t;
-      case _i7.Pago:
-        return _i7.Pago.t;
-      case _i9.Projects:
-        return _i9.Projects.t;
+      case _i4.Category:
+        return _i4.Category.t;
+      case _i5.InvoiceDetail:
+        return _i5.InvoiceDetail.t;
+      case _i6.InvoiceInfoAdicional:
+        return _i6.InvoiceInfoAdicional.t;
+      case _i7.Invoices:
+        return _i7.Invoices.t;
+      case _i8.Pago:
+        return _i8.Pago.t;
+      case _i10.Projects:
+        return _i10.Projects.t;
     }
     return null;
   }

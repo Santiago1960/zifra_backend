@@ -1,3 +1,8 @@
+category:
+  - getCategories:
+  - addCategory:
+  - updateCategory:
+  - deleteCategory:
 greeting:
   - hello:
 invoices:
@@ -5,6 +10,7 @@ invoices:
   - saveInvoices:
   - getProjectInvoices:
   - createProjectWithInvoices:
+  - updateInvoiceCategory:
 projects:
   - createProject:
   - getOpenProjects:

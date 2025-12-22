@@ -40,9 +40,11 @@ fields:
   # Otros
   numeroAutorizacion: String
   fechaAutorizacion: String
-  categoria: String
   estaSeleccionada: bool
   certificada: bool
+
+  # Categoría (ID directo, sin relación)
+  categoryId: int?
 
   # Relación con el padre (Foreign Key)
   project: Projects?, relation
