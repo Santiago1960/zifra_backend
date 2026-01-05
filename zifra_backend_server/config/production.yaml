@@ -5,23 +5,24 @@
 # this file is the examplepod.com domain name.
 
 # Configuration for the main API server.
+# Configuration for the main API server.
 apiServer:
   port: 8080
-  publicHost: api.examplepod.com
+  publicHost: api.zifra.bitgenial.com
   publicPort: 443
   publicScheme: https
 
 # Configuration for the Insights server.
 insightsServer:
   port: 8081
-  publicHost: insights.examplepod.com
+  publicHost: insights.zifra.bitgenial.com
   publicPort: 443
   publicScheme: https
 
 # Configuration for the web server.
 webServer:
   port: 8082
-  publicHost: app.examplepod.com
+  publicHost: web.zifra.bitgenial.com
   publicPort: 443
   publicScheme: https
 
@@ -30,11 +31,11 @@ webServer:
 # If you are connecting on a public IP (e.g. on AWS or Google Cloud Run), you
 # connect on the public IP of the database e.g. database.examplepod.com.
 database:
-  host: database.private-production.examplepod.com
+  host: postgres # Connects to the docker container named 'postgres'
   port: 5432
-  name: serverpod
+  name: zifra_backend
   user: postgres
-  requireSsl: true
+  requireSsl: false # Internal docker network doesn't need SSL usually, or configure if needed
   #isUnixSocket: true # defaults to false
 
 # This is the setup for Redis. The default for the Google Cloud Engine Terraform
@@ -43,7 +44,7 @@ database:
 # connect on the public IP of the database e.g. redis.examplepod.com.
 redis:
   enabled: false
-  host: redis.private-production.examplepod.com
+  host: redis
   port: 6379
   #user: # defaults to empty
   #requireSsl: true # defaults to false

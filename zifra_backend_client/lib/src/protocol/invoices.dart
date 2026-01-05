@@ -47,9 +47,9 @@ abstract class Invoices implements _i1.SerializableModel {
     this.infoAdicional,
     required this.numeroAutorizacion,
     required this.fechaAutorizacion,
-    required this.categoria,
     required this.estaSeleccionada,
     required this.certificada,
+    this.categoryId,
     required this.projectId,
     this.project,
   });
@@ -85,9 +85,9 @@ abstract class Invoices implements _i1.SerializableModel {
     List<_i4.InvoiceInfoAdicional>? infoAdicional,
     required String numeroAutorizacion,
     required String fechaAutorizacion,
-    required String categoria,
     required bool estaSeleccionada,
     required bool certificada,
+    int? categoryId,
     required int projectId,
     _i5.Projects? project,
   }) = _InvoicesImpl;
@@ -138,9 +138,9 @@ abstract class Invoices implements _i1.SerializableModel {
           .toList(),
       numeroAutorizacion: jsonSerialization['numeroAutorizacion'] as String,
       fechaAutorizacion: jsonSerialization['fechaAutorizacion'] as String,
-      categoria: jsonSerialization['categoria'] as String,
       estaSeleccionada: jsonSerialization['estaSeleccionada'] as bool,
       certificada: jsonSerialization['certificada'] as bool,
+      categoryId: jsonSerialization['categoryId'] as int?,
       projectId: jsonSerialization['projectId'] as int,
       project: jsonSerialization['project'] == null
           ? null
@@ -212,11 +212,11 @@ abstract class Invoices implements _i1.SerializableModel {
 
   String fechaAutorizacion;
 
-  String categoria;
-
   bool estaSeleccionada;
 
   bool certificada;
+
+  int? categoryId;
 
   int projectId;
 
@@ -256,9 +256,9 @@ abstract class Invoices implements _i1.SerializableModel {
     List<_i4.InvoiceInfoAdicional>? infoAdicional,
     String? numeroAutorizacion,
     String? fechaAutorizacion,
-    String? categoria,
     bool? estaSeleccionada,
     bool? certificada,
+    int? categoryId,
     int? projectId,
     _i5.Projects? project,
   });
@@ -297,9 +297,9 @@ abstract class Invoices implements _i1.SerializableModel {
         'infoAdicional': infoAdicional?.toJson(valueToJson: (v) => v.toJson()),
       'numeroAutorizacion': numeroAutorizacion,
       'fechaAutorizacion': fechaAutorizacion,
-      'categoria': categoria,
       'estaSeleccionada': estaSeleccionada,
       'certificada': certificada,
+      if (categoryId != null) 'categoryId': categoryId,
       'projectId': projectId,
       if (project != null) 'project': project?.toJson(),
     };
@@ -345,9 +345,9 @@ class _InvoicesImpl extends Invoices {
     List<_i4.InvoiceInfoAdicional>? infoAdicional,
     required String numeroAutorizacion,
     required String fechaAutorizacion,
-    required String categoria,
     required bool estaSeleccionada,
     required bool certificada,
+    int? categoryId,
     required int projectId,
     _i5.Projects? project,
   }) : super._(
@@ -381,9 +381,9 @@ class _InvoicesImpl extends Invoices {
           infoAdicional: infoAdicional,
           numeroAutorizacion: numeroAutorizacion,
           fechaAutorizacion: fechaAutorizacion,
-          categoria: categoria,
           estaSeleccionada: estaSeleccionada,
           certificada: certificada,
+          categoryId: categoryId,
           projectId: projectId,
           project: project,
         );
@@ -423,9 +423,9 @@ class _InvoicesImpl extends Invoices {
     Object? infoAdicional = _Undefined,
     String? numeroAutorizacion,
     String? fechaAutorizacion,
-    String? categoria,
     bool? estaSeleccionada,
     bool? certificada,
+    Object? categoryId = _Undefined,
     int? projectId,
     Object? project = _Undefined,
   }) {
@@ -469,9 +469,9 @@ class _InvoicesImpl extends Invoices {
           : this.infoAdicional?.map((e0) => e0.copyWith()).toList(),
       numeroAutorizacion: numeroAutorizacion ?? this.numeroAutorizacion,
       fechaAutorizacion: fechaAutorizacion ?? this.fechaAutorizacion,
-      categoria: categoria ?? this.categoria,
       estaSeleccionada: estaSeleccionada ?? this.estaSeleccionada,
       certificada: certificada ?? this.certificada,
+      categoryId: categoryId is int? ? categoryId : this.categoryId,
       projectId: projectId ?? this.projectId,
       project: project is _i5.Projects? ? project : this.project?.copyWith(),
     );

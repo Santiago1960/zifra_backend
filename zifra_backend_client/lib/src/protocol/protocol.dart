@@ -11,15 +11,18 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'greeting.dart' as _i2;
-import 'invoice_detail.dart' as _i3;
-import 'invoice_info_adicional.dart' as _i4;
-import 'invoices.dart' as _i5;
-import 'pago.dart' as _i6;
-import 'project_exception.dart' as _i7;
-import 'projects.dart' as _i8;
-import 'package:zifra_backend_client/src/protocol/invoices.dart' as _i9;
-import 'package:zifra_backend_client/src/protocol/projects.dart' as _i10;
+import 'category.dart' as _i3;
+import 'invoice_detail.dart' as _i4;
+import 'invoice_info_adicional.dart' as _i5;
+import 'invoices.dart' as _i6;
+import 'pago.dart' as _i7;
+import 'project_exception.dart' as _i8;
+import 'projects.dart' as _i9;
+import 'package:zifra_backend_client/src/protocol/category.dart' as _i10;
+import 'package:zifra_backend_client/src/protocol/invoices.dart' as _i11;
+import 'package:zifra_backend_client/src/protocol/projects.dart' as _i12;
 export 'greeting.dart';
+export 'category.dart';
 export 'invoice_detail.dart';
 export 'invoice_info_adicional.dart';
 export 'invoices.dart';
@@ -44,76 +47,86 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i2.Greeting) {
       return _i2.Greeting.fromJson(data) as T;
     }
-    if (t == _i3.InvoiceDetail) {
-      return _i3.InvoiceDetail.fromJson(data) as T;
+    if (t == _i3.Category) {
+      return _i3.Category.fromJson(data) as T;
     }
-    if (t == _i4.InvoiceInfoAdicional) {
-      return _i4.InvoiceInfoAdicional.fromJson(data) as T;
+    if (t == _i4.InvoiceDetail) {
+      return _i4.InvoiceDetail.fromJson(data) as T;
     }
-    if (t == _i5.Invoices) {
-      return _i5.Invoices.fromJson(data) as T;
+    if (t == _i5.InvoiceInfoAdicional) {
+      return _i5.InvoiceInfoAdicional.fromJson(data) as T;
     }
-    if (t == _i6.Pago) {
-      return _i6.Pago.fromJson(data) as T;
+    if (t == _i6.Invoices) {
+      return _i6.Invoices.fromJson(data) as T;
     }
-    if (t == _i7.ProjectException) {
-      return _i7.ProjectException.fromJson(data) as T;
+    if (t == _i7.Pago) {
+      return _i7.Pago.fromJson(data) as T;
     }
-    if (t == _i8.Projects) {
-      return _i8.Projects.fromJson(data) as T;
+    if (t == _i8.ProjectException) {
+      return _i8.ProjectException.fromJson(data) as T;
+    }
+    if (t == _i9.Projects) {
+      return _i9.Projects.fromJson(data) as T;
     }
     if (t == _i1.getType<_i2.Greeting?>()) {
       return (data != null ? _i2.Greeting.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i3.InvoiceDetail?>()) {
-      return (data != null ? _i3.InvoiceDetail.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i3.Category?>()) {
+      return (data != null ? _i3.Category.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i4.InvoiceInfoAdicional?>()) {
-      return (data != null ? _i4.InvoiceInfoAdicional.fromJson(data) : null)
+    if (t == _i1.getType<_i4.InvoiceDetail?>()) {
+      return (data != null ? _i4.InvoiceDetail.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i5.InvoiceInfoAdicional?>()) {
+      return (data != null ? _i5.InvoiceInfoAdicional.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i5.Invoices?>()) {
-      return (data != null ? _i5.Invoices.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i6.Invoices?>()) {
+      return (data != null ? _i6.Invoices.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i6.Pago?>()) {
-      return (data != null ? _i6.Pago.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i7.Pago?>()) {
+      return (data != null ? _i7.Pago.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i7.ProjectException?>()) {
-      return (data != null ? _i7.ProjectException.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i8.ProjectException?>()) {
+      return (data != null ? _i8.ProjectException.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i8.Projects?>()) {
-      return (data != null ? _i8.Projects.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i9.Projects?>()) {
+      return (data != null ? _i9.Projects.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<List<_i3.InvoiceDetail>?>()) {
+    if (t == _i1.getType<List<_i4.InvoiceDetail>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i3.InvoiceDetail>(e))
+              .map((e) => deserialize<_i4.InvoiceDetail>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i6.Pago>?>()) {
+    if (t == _i1.getType<List<_i7.Pago>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i6.Pago>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i7.Pago>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i4.InvoiceInfoAdicional>?>()) {
+    if (t == _i1.getType<List<_i5.InvoiceInfoAdicional>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i4.InvoiceInfoAdicional>(e))
+              .map((e) => deserialize<_i5.InvoiceInfoAdicional>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i5.Invoices>?>()) {
+    if (t == _i1.getType<List<_i6.Invoices>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i5.Invoices>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i6.Invoices>(e)).toList()
           : null) as T;
     }
-    if (t == List<_i9.Invoices>) {
-      return (data as List).map((e) => deserialize<_i9.Invoices>(e)).toList()
+    if (t == List<_i10.Category>) {
+      return (data as List).map((e) => deserialize<_i10.Category>(e)).toList()
           as T;
     }
-    if (t == List<_i10.Projects>) {
-      return (data as List).map((e) => deserialize<_i10.Projects>(e)).toList()
+    if (t == List<_i11.Invoices>) {
+      return (data as List).map((e) => deserialize<_i11.Invoices>(e)).toList()
+          as T;
+    }
+    if (t == List<_i12.Projects>) {
+      return (data as List).map((e) => deserialize<_i12.Projects>(e)).toList()
           as T;
     }
     return super.deserialize<T>(data, t);
@@ -126,22 +139,25 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i2.Greeting) {
       return 'Greeting';
     }
-    if (data is _i3.InvoiceDetail) {
+    if (data is _i3.Category) {
+      return 'Category';
+    }
+    if (data is _i4.InvoiceDetail) {
       return 'InvoiceDetail';
     }
-    if (data is _i4.InvoiceInfoAdicional) {
+    if (data is _i5.InvoiceInfoAdicional) {
       return 'InvoiceInfoAdicional';
     }
-    if (data is _i5.Invoices) {
+    if (data is _i6.Invoices) {
       return 'Invoices';
     }
-    if (data is _i6.Pago) {
+    if (data is _i7.Pago) {
       return 'Pago';
     }
-    if (data is _i7.ProjectException) {
+    if (data is _i8.ProjectException) {
       return 'ProjectException';
     }
-    if (data is _i8.Projects) {
+    if (data is _i9.Projects) {
       return 'Projects';
     }
     return null;
@@ -156,23 +172,26 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'Greeting') {
       return deserialize<_i2.Greeting>(data['data']);
     }
+    if (dataClassName == 'Category') {
+      return deserialize<_i3.Category>(data['data']);
+    }
     if (dataClassName == 'InvoiceDetail') {
-      return deserialize<_i3.InvoiceDetail>(data['data']);
+      return deserialize<_i4.InvoiceDetail>(data['data']);
     }
     if (dataClassName == 'InvoiceInfoAdicional') {
-      return deserialize<_i4.InvoiceInfoAdicional>(data['data']);
+      return deserialize<_i5.InvoiceInfoAdicional>(data['data']);
     }
     if (dataClassName == 'Invoices') {
-      return deserialize<_i5.Invoices>(data['data']);
+      return deserialize<_i6.Invoices>(data['data']);
     }
     if (dataClassName == 'Pago') {
-      return deserialize<_i6.Pago>(data['data']);
+      return deserialize<_i7.Pago>(data['data']);
     }
     if (dataClassName == 'ProjectException') {
-      return deserialize<_i7.ProjectException>(data['data']);
+      return deserialize<_i8.ProjectException>(data['data']);
     }
     if (dataClassName == 'Projects') {
-      return deserialize<_i8.Projects>(data['data']);
+      return deserialize<_i9.Projects>(data['data']);
     }
     return super.deserializeByClassName(data);
   }

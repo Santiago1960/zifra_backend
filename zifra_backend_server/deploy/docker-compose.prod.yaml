@@ -1,0 +1,58 @@
+services:
+  zifra_server:
+    build: 
+      context: ..
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - runmode=production
+      - serverid=default
+      - logging=normal
+      - role=monolith
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=zifra_backend
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=yeEq7XK7OU4U4QXKZqPB3iWVCYS0qflS
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+      - "8082:8082"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - zifra_network
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: zifra_backend
+      POSTGRES_PASSWORD: yeEq7XK7OU4U4QXKZqPB3iWVCYS0qflS
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - zifra_backend_data_prod:/var/lib/postgresql/data
+    networks:
+      - zifra_network
+
+  redis:
+    image: redis:6.2.6
+    restart: always
+    command: redis-server --requirepass zifra_redis_secure_9912
+    volumes:
+      - zifra_redis_data_prod:/data
+    networks:
+      - zifra_network
+
+volumes:
+  zifra_backend_data_prod:
+  zifra_redis_data_prod:
+
+networks:
+  zifra_network:
+    driver: bridge
