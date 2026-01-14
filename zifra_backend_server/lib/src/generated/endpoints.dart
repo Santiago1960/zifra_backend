@@ -56,7 +56,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'userId': _i1.ParameterDescription(
               name: 'userId',
-              type: _i1.getType<int>(),
+              type: _i1.getType<String>(),
               nullable: false,
             )
           },
@@ -256,6 +256,31 @@ class Endpoints extends _i1.EndpointDispatch {
                   .updateInvoiceCategory(
             session,
             params['claveAcceso'],
+            params['categoryId'],
+          ),
+        ),
+        'updateInvoicesCategory': _i1.MethodConnector(
+          name: 'updateInvoicesCategory',
+          params: {
+            'clavesAcceso': _i1.ParameterDescription(
+              name: 'clavesAcceso',
+              type: _i1.getType<List<String>>(),
+              nullable: false,
+            ),
+            'categoryId': _i1.ParameterDescription(
+              name: 'categoryId',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['invoices'] as _i4.InvoicesEndpoint)
+                  .updateInvoicesCategory(
+            session,
+            params['clavesAcceso'],
             params['categoryId'],
           ),
         ),

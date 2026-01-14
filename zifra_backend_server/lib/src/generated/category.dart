@@ -24,7 +24,7 @@ abstract class Category
 
   factory Category({
     int? id,
-    required int userId,
+    required String userId,
     required String name,
     required String color,
     bool? isDeleted,
@@ -34,7 +34,7 @@ abstract class Category
   factory Category.fromJson(Map<String, dynamic> jsonSerialization) {
     return Category(
       id: jsonSerialization['id'] as int?,
-      userId: jsonSerialization['userId'] as int,
+      userId: jsonSerialization['userId'] as String,
       name: jsonSerialization['name'] as String,
       color: jsonSerialization['color'] as String,
       isDeleted: jsonSerialization['isDeleted'] as bool?,
@@ -51,7 +51,7 @@ abstract class Category
   @override
   int? id;
 
-  int userId;
+  String userId;
 
   String name;
 
@@ -69,7 +69,7 @@ abstract class Category
   @_i1.useResult
   Category copyWith({
     int? id,
-    int? userId,
+    String? userId,
     String? name,
     String? color,
     bool? isDeleted,
@@ -134,7 +134,7 @@ class _Undefined {}
 class _CategoryImpl extends Category {
   _CategoryImpl({
     int? id,
-    required int userId,
+    required String userId,
     required String name,
     required String color,
     bool? isDeleted,
@@ -154,7 +154,7 @@ class _CategoryImpl extends Category {
   @override
   Category copyWith({
     Object? id = _Undefined,
-    int? userId,
+    String? userId,
     String? name,
     String? color,
     Object? isDeleted = _Undefined,
@@ -173,7 +173,7 @@ class _CategoryImpl extends Category {
 
 class CategoryTable extends _i1.Table<int?> {
   CategoryTable({super.tableRelation}) : super(tableName: 'category') {
-    userId = _i1.ColumnInt(
+    userId = _i1.ColumnString(
       'userId',
       this,
     );
@@ -196,7 +196,7 @@ class CategoryTable extends _i1.Table<int?> {
     );
   }
 
-  late final _i1.ColumnInt userId;
+  late final _i1.ColumnString userId;
 
   late final _i1.ColumnString name;
 

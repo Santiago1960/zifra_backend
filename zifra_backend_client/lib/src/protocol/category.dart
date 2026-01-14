@@ -23,7 +23,7 @@ abstract class Category implements _i1.SerializableModel {
 
   factory Category({
     int? id,
-    required int userId,
+    required String userId,
     required String name,
     required String color,
     bool? isDeleted,
@@ -33,7 +33,7 @@ abstract class Category implements _i1.SerializableModel {
   factory Category.fromJson(Map<String, dynamic> jsonSerialization) {
     return Category(
       id: jsonSerialization['id'] as int?,
-      userId: jsonSerialization['userId'] as int,
+      userId: jsonSerialization['userId'] as String,
       name: jsonSerialization['name'] as String,
       color: jsonSerialization['color'] as String,
       isDeleted: jsonSerialization['isDeleted'] as bool?,
@@ -48,7 +48,7 @@ abstract class Category implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  int userId;
+  String userId;
 
   String name;
 
@@ -63,7 +63,7 @@ abstract class Category implements _i1.SerializableModel {
   @_i1.useResult
   Category copyWith({
     int? id,
-    int? userId,
+    String? userId,
     String? name,
     String? color,
     bool? isDeleted,
@@ -92,7 +92,7 @@ class _Undefined {}
 class _CategoryImpl extends Category {
   _CategoryImpl({
     int? id,
-    required int userId,
+    required String userId,
     required String name,
     required String color,
     bool? isDeleted,
@@ -112,7 +112,7 @@ class _CategoryImpl extends Category {
   @override
   Category copyWith({
     Object? id = _Undefined,
-    int? userId,
+    String? userId,
     String? name,
     String? color,
     Object? isDeleted = _Undefined,

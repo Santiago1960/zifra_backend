@@ -5,7 +5,7 @@ class CategoryEndpoint extends Endpoint {
   
   /// Obtiene todas las categorías activas de un usuario específico.
   /// Como no hay auth, el cliente debe enviar el userId.
-  Future<List<Category>> getCategories(Session session, int userId) async {
+  Future<List<Category>> getCategories(Session session, String userId) async {
     return await Category.db.find(
       session,
       where: (t) => t.userId.equals(userId) & t.isDeleted.equals(false),

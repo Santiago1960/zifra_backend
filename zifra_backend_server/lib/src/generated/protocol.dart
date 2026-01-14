@@ -54,9 +54,9 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'userId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: false,
-          dartType: 'int',
+          dartType: 'String',
         ),
         _i2.ColumnDefinition(
           name: 'name',
@@ -730,6 +730,9 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == List<_i12.Invoices>) {
       return (data as List).map((e) => deserialize<_i12.Invoices>(e)).toList()
           as T;
+    }
+    if (t == List<String>) {
+      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
     if (t == List<_i13.Projects>) {
       return (data as List).map((e) => deserialize<_i13.Projects>(e)).toList()

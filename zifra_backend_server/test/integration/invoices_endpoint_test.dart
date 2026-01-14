@@ -47,7 +47,8 @@ void main() {
         );
 
         // Create an open project for another RUC
-        final otherProject = await Projects.db.insertRow(
+        // Create an open project for another RUC
+        await Projects.db.insertRow(
           session,
           Projects(
             cliente: 'Cliente B',
@@ -86,7 +87,6 @@ void main() {
             valorDevolucionIva: 0.0,
             propina: 0.0,
             importeTotal: 112.0,
-            categoria: 'Categoria A',
             estaSeleccionada: false,
             certificada: false,
             numeroAutorizacion: '1234567890',
@@ -123,7 +123,6 @@ void main() {
             valorDevolucionIva: 0.0,
             propina: 0.0,
             importeTotal: 224.0,
-            categoria: 'Categoria A',
             estaSeleccionada: false,
             certificada: false,
             numeroAutorizacion: '1234567890',
@@ -215,7 +214,6 @@ void main() {
             valorDevolucionIva: 0.0,
             propina: 0.0,
             importeTotal: 112.0,
-            categoria: 'Categoria Test',
             estaSeleccionada: false,
             certificada: false,
             numeroAutorizacion: '1234567890',

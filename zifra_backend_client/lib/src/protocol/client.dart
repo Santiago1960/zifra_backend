@@ -26,7 +26,7 @@ class EndpointCategory extends _i1.EndpointRef {
 
   /// Obtiene todas las categorías activas de un usuario específico.
   /// Como no hay auth, el cliente debe enviar el userId.
-  _i2.Future<List<_i3.Category>> getCategories(int userId) =>
+  _i2.Future<List<_i3.Category>> getCategories(String userId) =>
       caller.callServerEndpoint<List<_i3.Category>>(
         'category',
         'getCategories',
@@ -126,6 +126,19 @@ class EndpointInvoices extends _i1.EndpointRef {
         'updateInvoiceCategory',
         {
           'claveAcceso': claveAcceso,
+          'categoryId': categoryId,
+        },
+      );
+
+  _i2.Future<bool> updateInvoicesCategory(
+    List<String> clavesAcceso,
+    int? categoryId,
+  ) =>
+      caller.callServerEndpoint<bool>(
+        'invoices',
+        'updateInvoicesCategory',
+        {
+          'clavesAcceso': clavesAcceso,
           'categoryId': categoryId,
         },
       );

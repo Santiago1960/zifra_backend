@@ -217,4 +217,32 @@ class InvoicesEndpoint extends Endpoint {
     
     return updatedInvoice;
   }
+
+  Future<bool> updateInvoicesCategory(
+    Session session,
+    List<String> clavesAcceso,
+    int? categoryId,
+  ) async {
+    if (clavesAcceso.isEmpty) return true;
+
+    await session.db.transaction((transaction) async {
+      // Find all invoices to update
+      final invoices = await Invoices.db.find(
+        session,
+        where: (t) => t.claveAcceso.inSet(clavesAcceso.toSet()),
+        transaction: transaction,
+      );
+
+      for (var invoice in invoices) {
+        final updatedInvoice = invoice.copyWith(categoryId: categoryId);
+        await Invoices.db.updateRow(
+          session, 
+          updatedInvoice, 
+          transaction: transaction
+        );
+      }
+    });
+    
+    return true;
+  }
 }
