@@ -158,11 +158,11 @@ class EndpointProjects extends _i1.EndpointRef {
         {'project': project},
       );
 
-  _i2.Future<List<_i6.Projects>> getOpenProjects() =>
+  _i2.Future<List<_i6.Projects>> getOpenProjects({String? rucBeneficiario}) =>
       caller.callServerEndpoint<List<_i6.Projects>>(
         'projects',
         'getOpenProjects',
-        {},
+        {'rucBeneficiario': rucBeneficiario},
       );
 }
 

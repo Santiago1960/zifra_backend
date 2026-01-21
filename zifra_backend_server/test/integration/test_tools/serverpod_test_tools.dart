@@ -544,7 +544,9 @@ class _ProjectsEndpoint {
   }
 
   _i3.Future<List<_i7.Projects>> getOpenProjects(
-      _i1.TestSessionBuilder sessionBuilder) async {
+    _i1.TestSessionBuilder sessionBuilder, {
+    String? rucBeneficiario,
+  }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
@@ -556,7 +558,8 @@ class _ProjectsEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'projects',
           methodName: 'getOpenProjects',
-          parameters: _i1.testObjectToJson({}),
+          parameters:
+              _i1.testObjectToJson({'rucBeneficiario': rucBeneficiario}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue = await (_localCallContext.method.call(

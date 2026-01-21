@@ -310,13 +310,21 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
         'getOpenProjects': _i1.MethodConnector(
           name: 'getOpenProjects',
-          params: {},
+          params: {
+            'rucBeneficiario': _i1.ParameterDescription(
+              name: 'rucBeneficiario',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            )
+          },
           call: (
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['projects'] as _i5.ProjectsEndpoint)
-                  .getOpenProjects(session),
+              (endpoints['projects'] as _i5.ProjectsEndpoint).getOpenProjects(
+            session,
+            rucBeneficiario: params['rucBeneficiario'],
+          ),
         ),
       },
     );

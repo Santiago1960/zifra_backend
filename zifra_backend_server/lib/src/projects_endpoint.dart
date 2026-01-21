@@ -34,11 +34,11 @@ class ProjectsEndpoint extends Endpoint {
     return insertedProject.id!;
   }
 
-  Future<List<Projects>> getOpenProjects(Session session) async {
+  Future<List<Projects>> getOpenProjects(Session session, {String? rucBeneficiario}) async {
     // 1. Buscar proyectos abiertos
     final openProjects = await Projects.db.find(
       session,
-      where: (t) => t.isClosed.equals(false),
+      where: (t) => t.isClosed.equals(false) & (rucBeneficiario == null ? t.rucBeneficiario.equals(null) : t.rucBeneficiario.equals(rucBeneficiario)),
     );
 
     List<Projects> projectsWithInvoices = [];
