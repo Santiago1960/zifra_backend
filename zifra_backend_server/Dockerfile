@@ -26,8 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy runtime dependencies
-COPY --from=build /runtime/ /
+# Debian ya tiene las librerías runtime necesarias (glibc, etc.)
 
 # Copy compiled server executable
 COPY --from=build /app/bin/server server
