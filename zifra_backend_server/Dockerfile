@@ -1,9 +1,10 @@
 # Build stage
-FROM dart:3.5.0 AS build
+FROM dart:3.10.4 AS build
 WORKDIR /app
 COPY . .
 
 # Install dependencies and compile the server executable
+ENV PUPPETEER_SKIP_DOWNLOAD=true
 RUN dart pub get
 RUN dart compile exe bin/main.dart -o bin/server
 
