@@ -42,7 +42,7 @@ void run(List<String> args) async {
   // also schedule them in any endpoint or webroute through the session object.
   // there is also [futureCallAtTime] if you want to schedule a future call at a
   // specific time.
-  await pod.futureCallWithDelay(
+  /* await pod.futureCallWithDelay(
     FutureCallNames.birthdayReminder.name,
     Greeting(
       message: 'Hello!',
@@ -50,7 +50,7 @@ void run(List<String> args) async {
       timestamp: DateTime.now(),
     ),
     Duration(seconds: 5),
-  );
+  ); */
 }
 
 /// Names of all future calls in the server.

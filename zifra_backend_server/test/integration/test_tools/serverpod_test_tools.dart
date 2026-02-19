@@ -111,6 +111,8 @@ class TestEndpoints {
   late final _InvoicesEndpoint invoices;
 
   late final _ProjectsEndpoint projects;
+
+  late final _SriEndpoint sri;
 }
 
 class _InternalTestEndpoints extends TestEndpoints
@@ -133,6 +135,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     projects = _ProjectsEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    sri = _SriEndpoint(
       endpoints,
       serializationManager,
     );
@@ -566,6 +572,54 @@ class _ProjectsEndpoint {
           _localUniqueSession,
           _localCallContext.arguments,
         ) as _i3.Future<List<_i7.Projects>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _SriEndpoint {
+  _SriEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<bool> requestSridownload(
+    _i1.TestSessionBuilder sessionBuilder,
+    String ruc,
+    String password,
+    int year,
+    int month,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'sri',
+        method: 'requestSridownload',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'sri',
+          methodName: 'requestSridownload',
+          parameters: _i1.testObjectToJson({
+            'ruc': ruc,
+            'password': password,
+            'year': year,
+            'month': month,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<bool>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

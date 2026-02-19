@@ -7,14 +7,23 @@ COPY . .
 RUN dart pub get
 RUN dart compile exe bin/main.dart -o bin/server
 
-# Final stage
-FROM alpine:latest
+# Final stage — Debian (necesario para Chromium + Xvfb)
+FROM debian:bookworm-slim
 
 # Environment variables
 ENV runmode=production
 ENV serverid=default
 ENV logging=normal
 ENV role=monolith
+ENV DISPLAY=:99
+
+# Chromium + Xvfb para automatización SRI
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    chromium \
+    xvfb \
+    fonts-liberation \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy runtime dependencies
 COPY --from=build /runtime/ /
@@ -30,10 +39,13 @@ COPY --from=build /app/migrations/ migrations/
 # This file is required to enable the endpoint log filter in Insights.
 COPY --from=build /app/lib/src/generated/protocol.yaml lib/src/generated/protocol.yaml
 
+# Directorio para XMLs descargados
+RUN mkdir -p /tmp/sri_xmls
+
 # Expose ports
 EXPOSE 8080
 EXPOSE 8081
 EXPOSE 8082
 
-# Define the entrypoint command
-ENTRYPOINT ./server --mode=$runmode --server-id=$serverid --logging=$logging --role=$role
+# Iniciar Xvfb (pantalla virtual) + servidor
+ENTRYPOINT Xvfb :99 -screen 0 1280x900x24 -nolisten tcp & sleep 1 && ./server --mode=$runmode --server-id=$serverid --logging=$logging --role=$role

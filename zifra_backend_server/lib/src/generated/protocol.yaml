@@ -15,3 +15,5 @@ invoices:
 projects:
   - createProject:
   - getOpenProjects:
+sri:
+  - requestSridownload:

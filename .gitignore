@@ -1,0 +1,17 @@
+# Chrome local (descargado por Puppeteer - solo para dev)
+.local-chrome/
+
+# Dart
+.dart_tool/
+.packages
+build/
+pubspec.lock
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

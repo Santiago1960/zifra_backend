@@ -166,6 +166,31 @@ class EndpointProjects extends _i1.EndpointRef {
       );
 }
 
+/// {@category Endpoint}
+class EndpointSri extends _i1.EndpointRef {
+  EndpointSri(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'sri';
+
+  _i2.Future<bool> requestSridownload(
+    String ruc,
+    String password,
+    int year,
+    int month,
+  ) =>
+      caller.callServerEndpoint<bool>(
+        'sri',
+        'requestSridownload',
+        {
+          'ruc': ruc,
+          'password': password,
+          'year': year,
+          'month': month,
+        },
+      );
+}
+
 class Client extends _i1.ServerpodClientShared {
   Client(
     String host, {
@@ -196,6 +221,7 @@ class Client extends _i1.ServerpodClientShared {
     greeting = EndpointGreeting(this);
     invoices = EndpointInvoices(this);
     projects = EndpointProjects(this);
+    sri = EndpointSri(this);
   }
 
   late final EndpointCategory category;
@@ -206,12 +232,15 @@ class Client extends _i1.ServerpodClientShared {
 
   late final EndpointProjects projects;
 
+  late final EndpointSri sri;
+
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
         'category': category,
         'greeting': greeting,
         'invoices': invoices,
         'projects': projects,
+        'sri': sri,
       };
 
   @override

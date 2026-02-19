@@ -14,9 +14,10 @@ import '../category_endpoint.dart' as _i2;
 import '../greeting_endpoint.dart' as _i3;
 import '../invoices_endpoint.dart' as _i4;
 import '../projects_endpoint.dart' as _i5;
-import 'package:zifra_backend_server/src/generated/category.dart' as _i6;
-import 'package:zifra_backend_server/src/generated/invoices.dart' as _i7;
-import 'package:zifra_backend_server/src/generated/projects.dart' as _i8;
+import '../sri_endpoint.dart' as _i6;
+import 'package:zifra_backend_server/src/generated/category.dart' as _i7;
+import 'package:zifra_backend_server/src/generated/invoices.dart' as _i8;
+import 'package:zifra_backend_server/src/generated/projects.dart' as _i9;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -44,6 +45,12 @@ class Endpoints extends _i1.EndpointDispatch {
         ..initialize(
           server,
           'projects',
+          null,
+        ),
+      'sri': _i6.SriEndpoint()
+        ..initialize(
+          server,
+          'sri',
           null,
         ),
     };
@@ -74,7 +81,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'category': _i1.ParameterDescription(
               name: 'category',
-              type: _i1.getType<_i6.Category>(),
+              type: _i1.getType<_i7.Category>(),
               nullable: false,
             )
           },
@@ -92,7 +99,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'category': _i1.ParameterDescription(
               name: 'category',
-              type: _i1.getType<_i6.Category>(),
+              type: _i1.getType<_i7.Category>(),
               nullable: false,
             )
           },
@@ -177,7 +184,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'invoices': _i1.ParameterDescription(
               name: 'invoices',
-              type: _i1.getType<List<_i7.Invoices>>(),
+              type: _i1.getType<List<_i8.Invoices>>(),
               nullable: false,
             )
           },
@@ -214,12 +221,12 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'project': _i1.ParameterDescription(
               name: 'project',
-              type: _i1.getType<_i8.Projects>(),
+              type: _i1.getType<_i9.Projects>(),
               nullable: false,
             ),
             'invoices': _i1.ParameterDescription(
               name: 'invoices',
-              type: _i1.getType<List<_i7.Invoices>>(),
+              type: _i1.getType<List<_i8.Invoices>>(),
               nullable: false,
             ),
           },
@@ -295,7 +302,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'project': _i1.ParameterDescription(
               name: 'project',
-              type: _i1.getType<_i8.Projects>(),
+              type: _i1.getType<_i9.Projects>(),
               nullable: false,
             )
           },
@@ -326,6 +333,48 @@ class Endpoints extends _i1.EndpointDispatch {
             rucBeneficiario: params['rucBeneficiario'],
           ),
         ),
+      },
+    );
+    connectors['sri'] = _i1.EndpointConnector(
+      name: 'sri',
+      endpoint: endpoints['sri']!,
+      methodConnectors: {
+        'requestSridownload': _i1.MethodConnector(
+          name: 'requestSridownload',
+          params: {
+            'ruc': _i1.ParameterDescription(
+              name: 'ruc',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'password': _i1.ParameterDescription(
+              name: 'password',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'year': _i1.ParameterDescription(
+              name: 'year',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'month': _i1.ParameterDescription(
+              name: 'month',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['sri'] as _i6.SriEndpoint).requestSridownload(
+            session,
+            params['ruc'],
+            params['password'],
+            params['year'],
+            params['month'],
+          ),
+        )
       },
     );
   }
