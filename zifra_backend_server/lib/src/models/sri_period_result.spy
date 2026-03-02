@@ -1,0 +1,7 @@
+class: SriPeriodResult
+fields:
+  year: int
+  month: int
+  descargadas: int
+  duplicadas: int
+  errores: int

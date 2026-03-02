@@ -16,4 +16,4 @@ projects:
   - createProject:
   - getOpenProjects:
 sri:
-  - requestSridownload:
+  - downloadAndSave:

@@ -18,6 +18,9 @@ import 'package:zifra_backend_server/src/generated/category.dart' as _i4;
 import 'package:zifra_backend_server/src/generated/greeting.dart' as _i5;
 import 'package:zifra_backend_server/src/generated/invoices.dart' as _i6;
 import 'package:zifra_backend_server/src/generated/projects.dart' as _i7;
+import 'package:zifra_backend_server/src/generated/sri_download_result.dart'
+    as _i8;
+import 'package:zifra_backend_server/src/generated/sri_period.dart' as _i9;
 import 'package:zifra_backend_server/src/generated/protocol.dart';
 import 'package:zifra_backend_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -590,36 +593,36 @@ class _SriEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<bool> requestSridownload(
+  _i3.Future<_i8.SriDownloadResult> downloadAndSave(
     _i1.TestSessionBuilder sessionBuilder,
     String ruc,
     String password,
-    int year,
-    int month,
+    int projectId,
+    List<_i9.SriPeriod> periods,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
         endpoint: 'sri',
-        method: 'requestSridownload',
+        method: 'downloadAndSave',
       );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'sri',
-          methodName: 'requestSridownload',
+          methodName: 'downloadAndSave',
           parameters: _i1.testObjectToJson({
             'ruc': ruc,
             'password': password,
-            'year': year,
-            'month': month,
+            'projectId': projectId,
+            'periods': periods,
           }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<bool>);
+        ) as _i3.Future<_i8.SriDownloadResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

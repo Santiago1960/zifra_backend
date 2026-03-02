@@ -18,6 +18,7 @@ import '../sri_endpoint.dart' as _i6;
 import 'package:zifra_backend_server/src/generated/category.dart' as _i7;
 import 'package:zifra_backend_server/src/generated/invoices.dart' as _i8;
 import 'package:zifra_backend_server/src/generated/projects.dart' as _i9;
+import 'package:zifra_backend_server/src/generated/sri_period.dart' as _i10;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -339,8 +340,8 @@ class Endpoints extends _i1.EndpointDispatch {
       name: 'sri',
       endpoint: endpoints['sri']!,
       methodConnectors: {
-        'requestSridownload': _i1.MethodConnector(
-          name: 'requestSridownload',
+        'downloadAndSave': _i1.MethodConnector(
+          name: 'downloadAndSave',
           params: {
             'ruc': _i1.ParameterDescription(
               name: 'ruc',
@@ -352,14 +353,14 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<String>(),
               nullable: false,
             ),
-            'year': _i1.ParameterDescription(
-              name: 'year',
+            'projectId': _i1.ParameterDescription(
+              name: 'projectId',
               type: _i1.getType<int>(),
               nullable: false,
             ),
-            'month': _i1.ParameterDescription(
-              name: 'month',
-              type: _i1.getType<int>(),
+            'periods': _i1.ParameterDescription(
+              name: 'periods',
+              type: _i1.getType<List<_i10.SriPeriod>>(),
               nullable: false,
             ),
           },
@@ -367,12 +368,12 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['sri'] as _i6.SriEndpoint).requestSridownload(
+              (endpoints['sri'] as _i6.SriEndpoint).downloadAndSave(
             session,
             params['ruc'],
             params['password'],
-            params['year'],
-            params['month'],
+            params['projectId'],
+            params['periods'],
           ),
         )
       },

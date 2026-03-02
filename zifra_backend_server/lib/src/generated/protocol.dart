@@ -19,9 +19,13 @@ import 'invoices.dart' as _i7;
 import 'pago.dart' as _i8;
 import 'project_exception.dart' as _i9;
 import 'projects.dart' as _i10;
-import 'package:zifra_backend_server/src/generated/category.dart' as _i11;
-import 'package:zifra_backend_server/src/generated/invoices.dart' as _i12;
-import 'package:zifra_backend_server/src/generated/projects.dart' as _i13;
+import 'sri_download_result.dart' as _i11;
+import 'sri_period.dart' as _i12;
+import 'sri_period_result.dart' as _i13;
+import 'package:zifra_backend_server/src/generated/category.dart' as _i14;
+import 'package:zifra_backend_server/src/generated/invoices.dart' as _i15;
+import 'package:zifra_backend_server/src/generated/projects.dart' as _i16;
+import 'package:zifra_backend_server/src/generated/sri_period.dart' as _i17;
 export 'greeting.dart';
 export 'category.dart';
 export 'invoice_detail.dart';
@@ -30,6 +34,9 @@ export 'invoices.dart';
 export 'pago.dart';
 export 'project_exception.dart';
 export 'projects.dart';
+export 'sri_download_result.dart';
+export 'sri_period.dart';
+export 'sri_period_result.dart';
 
 class Protocol extends _i1.SerializationManagerServer {
   Protocol._();
@@ -674,6 +681,15 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i10.Projects) {
       return _i10.Projects.fromJson(data) as T;
     }
+    if (t == _i11.SriDownloadResult) {
+      return _i11.SriDownloadResult.fromJson(data) as T;
+    }
+    if (t == _i12.SriPeriod) {
+      return _i12.SriPeriod.fromJson(data) as T;
+    }
+    if (t == _i13.SriPeriodResult) {
+      return _i13.SriPeriodResult.fromJson(data) as T;
+    }
     if (t == _i1.getType<_i3.Greeting?>()) {
       return (data != null ? _i3.Greeting.fromJson(data) : null) as T;
     }
@@ -699,6 +715,15 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i10.Projects?>()) {
       return (data != null ? _i10.Projects.fromJson(data) : null) as T;
     }
+    if (t == _i1.getType<_i11.SriDownloadResult?>()) {
+      return (data != null ? _i11.SriDownloadResult.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i12.SriPeriod?>()) {
+      return (data != null ? _i12.SriPeriod.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i13.SriPeriodResult?>()) {
+      return (data != null ? _i13.SriPeriodResult.fromJson(data) : null) as T;
+    }
     if (t == _i1.getType<List<_i5.InvoiceDetail>?>()) {
       return (data != null
           ? (data as List)
@@ -723,19 +748,28 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<_i7.Invoices>(e)).toList()
           : null) as T;
     }
-    if (t == List<_i11.Category>) {
-      return (data as List).map((e) => deserialize<_i11.Category>(e)).toList()
+    if (t == List<_i13.SriPeriodResult>) {
+      return (data as List)
+          .map((e) => deserialize<_i13.SriPeriodResult>(e))
+          .toList() as T;
+    }
+    if (t == List<_i14.Category>) {
+      return (data as List).map((e) => deserialize<_i14.Category>(e)).toList()
           as T;
     }
-    if (t == List<_i12.Invoices>) {
-      return (data as List).map((e) => deserialize<_i12.Invoices>(e)).toList()
+    if (t == List<_i15.Invoices>) {
+      return (data as List).map((e) => deserialize<_i15.Invoices>(e)).toList()
           as T;
     }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
-    if (t == List<_i13.Projects>) {
-      return (data as List).map((e) => deserialize<_i13.Projects>(e)).toList()
+    if (t == List<_i16.Projects>) {
+      return (data as List).map((e) => deserialize<_i16.Projects>(e)).toList()
+          as T;
+    }
+    if (t == List<_i17.SriPeriod>) {
+      return (data as List).map((e) => deserialize<_i17.SriPeriod>(e)).toList()
           as T;
     }
     try {
@@ -771,6 +805,15 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (data is _i10.Projects) {
       return 'Projects';
+    }
+    if (data is _i11.SriDownloadResult) {
+      return 'SriDownloadResult';
+    }
+    if (data is _i12.SriPeriod) {
+      return 'SriPeriod';
+    }
+    if (data is _i13.SriPeriodResult) {
+      return 'SriPeriodResult';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -808,6 +851,15 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (dataClassName == 'Projects') {
       return deserialize<_i10.Projects>(data['data']);
+    }
+    if (dataClassName == 'SriDownloadResult') {
+      return deserialize<_i11.SriDownloadResult>(data['data']);
+    }
+    if (dataClassName == 'SriPeriod') {
+      return deserialize<_i12.SriPeriod>(data['data']);
+    }
+    if (dataClassName == 'SriPeriodResult') {
+      return deserialize<_i13.SriPeriodResult>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);

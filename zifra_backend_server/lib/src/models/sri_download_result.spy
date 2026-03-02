@@ -1,0 +1,6 @@
+class: SriDownloadResult
+fields:
+  periods: List<SriPeriodResult>
+  totalDescargadas: int
+  totalDuplicadas: int
+  totalErrores: int

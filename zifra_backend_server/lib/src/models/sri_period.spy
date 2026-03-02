@@ -1,0 +1,4 @@
+class: SriPeriod
+fields:
+  year: int
+  month: int
