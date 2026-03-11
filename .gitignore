@@ -15,3 +15,7 @@ pubspec.lock
 # OS
 .DS_Store
 Thumbs.db
+
+# Secrets — nunca subir al repositorio
+.env
+config/passwords.yaml
