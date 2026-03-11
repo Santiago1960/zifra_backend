@@ -15,7 +15,10 @@ import 'package:zifra_backend_client/src/protocol/category.dart' as _i3;
 import 'package:zifra_backend_client/src/protocol/greeting.dart' as _i4;
 import 'package:zifra_backend_client/src/protocol/invoices.dart' as _i5;
 import 'package:zifra_backend_client/src/protocol/projects.dart' as _i6;
-import 'protocol.dart' as _i7;
+import 'package:zifra_backend_client/src/protocol/sri_download_result.dart'
+    as _i7;
+import 'package:zifra_backend_client/src/protocol/sri_period.dart' as _i8;
+import 'protocol.dart' as _i9;
 
 /// {@category Endpoint}
 class EndpointCategory extends _i1.EndpointRef {
@@ -173,20 +176,24 @@ class EndpointSri extends _i1.EndpointRef {
   @override
   String get name => 'sri';
 
-  _i2.Future<bool> requestSridownload(
+  /// Descarga los comprobantes del SRI para múltiples períodos y los guarda
+  /// directamente en el proyecto indicado, marcados como [certificada]=true.
+  ///
+  /// Abre el browser una sola vez — login único — itera por cada período.
+  _i2.Future<_i7.SriDownloadResult> downloadAndSave(
     String ruc,
     String password,
-    int year,
-    int month,
+    int projectId,
+    List<_i8.SriPeriod> periods,
   ) =>
-      caller.callServerEndpoint<bool>(
+      caller.callServerEndpoint<_i7.SriDownloadResult>(
         'sri',
-        'requestSridownload',
+        'downloadAndSave',
         {
           'ruc': ruc,
           'password': password,
-          'year': year,
-          'month': month,
+          'projectId': projectId,
+          'periods': periods,
         },
       );
 }
@@ -207,7 +214,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i7.Protocol(),
+          _i9.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
