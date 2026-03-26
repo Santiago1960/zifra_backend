@@ -339,20 +339,33 @@ class SriEndpoint extends Endpoint {
       }
 
       // Seleccionar ejecutable de Chrome/Chromium disponible
-      const chromeMac = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-      const chromeLinux = '/usr/bin/google-chrome';
-      const chromiumLinux = '/usr/bin/chromium';
-      final execPath = File(chromeMac).existsSync() ? chromeMac
-          : File(chromeLinux).existsSync() ? chromeLinux
-          : File(chromiumLinux).existsSync() ? chromiumLinux
+      const chromeMac         = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+      const chromeLinux       = '/usr/bin/google-chrome';
+      const chromiumLinux     = '/usr/bin/chromium';
+      const chromiumBrowser   = '/usr/bin/chromium-browser';
+      const chromiumSnap      = '/snap/bin/chromium';
+      final execPath = File(chromeMac).existsSync()       ? chromeMac
+          : File(chromeLinux).existsSync()                ? chromeLinux
+          : File(chromiumLinux).existsSync()              ? chromiumLinux
+          : File(chromiumBrowser).existsSync()            ? chromiumBrowser
+          : File(chromiumSnap).existsSync()               ? chromiumSnap
           : null;
       _log('Browser: ${execPath ?? "puppeteer-bundled"}');
 
       browser = await puppeteer.launch(
-        headless: false,
+        headless: true,
         executablePath: execPath,
         ignoreDefaultArgs: ['--enable-automation'],
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-blink-features=AutomationControlled', '--window-size=1280,900'],
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-blink-features=AutomationControlled',
+          '--disable-gpu',
+          '--disable-dev-shm-usage',
+          '--no-first-run',
+          '--no-zygote',
+          '--window-size=1280,900',
+        ],
       );
 
       final page = await browser.newPage();

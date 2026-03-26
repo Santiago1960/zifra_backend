@@ -8,7 +8,7 @@
 # Configuration for the main API server.
 apiServer:
   port: 8080
-  publicHost: api.zifra.bitgenial.com
+  publicHost: zifra.bitgenial.com
   publicPort: 443
   publicScheme: https
 
@@ -31,10 +31,10 @@ webServer:
 # If you are connecting on a public IP (e.g. on AWS or Google Cloud Run), you
 # connect on the public IP of the database e.g. database.examplepod.com.
 database:
-  host: postgres # Connects to the docker container named 'postgres'
+  host: zifra-postgres # Connects to the docker container named 'postgres'
   port: 5432
-  name: zifra_backend
-  user: postgres
+  name: zifra
+  user: santiago
   requireSsl: false # Internal docker network doesn't need SSL usually, or configure if needed
   #isUnixSocket: true # defaults to false
 
