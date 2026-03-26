@@ -353,7 +353,7 @@ class SriEndpoint extends Endpoint {
       _log('Browser: ${execPath ?? "puppeteer-bundled"}');
 
       browser = await puppeteer.launch(
-        headless: true,
+        headless: false,
         executablePath: execPath,
         ignoreDefaultArgs: ['--enable-automation'],
         args: [

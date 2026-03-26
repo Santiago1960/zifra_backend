@@ -48,4 +48,4 @@ EXPOSE 8081
 EXPOSE 8082
 
 # Iniciar Xvfb (pantalla virtual) + servidor
-ENTRYPOINT Xvfb :99 -screen 0 1280x900x24 -nolisten tcp & sleep 1 && ./server --mode=$runmode --server-id=$serverid --logging=$logging --role=$role
+ENTRYPOINT rm -f /tmp/.X99-lock && Xvfb :99 -screen 0 1280x900x24 -nolisten tcp & sleep 1 && ./server --mode=$runmode --server-id=$serverid --logging=$logging --role=$role
