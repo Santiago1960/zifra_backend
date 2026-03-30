@@ -176,10 +176,19 @@ class EndpointSri extends _i1.EndpointRef {
   @override
   String get name => 'sri';
 
+  /// Retorna los eventos acumulados desde la última llamada y los elimina.
+  /// El cliente Flutter llama esto cada ~1.5s mientras la descarga está activa.
+  /// Responde: JSON string → `[{"msg":"...","type":"info","ts":0}, ...]`
+  _i2.Future<String> getProgress(int projectId) =>
+      caller.callServerEndpoint<String>(
+        'sri',
+        'getProgress',
+        {'projectId': projectId},
+      );
+
   /// Descarga los comprobantes del SRI para múltiples períodos y los guarda
   /// directamente en el proyecto indicado, marcados como [certificada]=true.
-  ///
-  /// Abre el browser una sola vez — login único — itera por cada período.
+  /// El progreso puede consultarse en tiempo real vía [getProgress].
   _i2.Future<_i7.SriDownloadResult> downloadAndSave(
     String ruc,
     String password,

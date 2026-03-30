@@ -43,7 +43,7 @@ class SriEndpoint extends Endpoint {
       (String msg, {String type = 'info', int? done, int? total}) {
         stderr.writeln('[${DateTime.now()}] SRI-BOT: $msg');
         
-        final f = File('/tmp/sri_progress_$projectId.json');
+        final f = File('sri_progress_$projectId.json');
         var events = <Map<String, dynamic>>[];
         if (f.existsSync()) {
           try {
@@ -66,7 +66,7 @@ class SriEndpoint extends Endpoint {
   /// El cliente Flutter llama esto cada ~1.5s mientras la descarga está activa.
   /// Responde: JSON string → `[{"msg":"...","type":"info","ts":0}, ...]`
   Future<String> getProgress(Session session, int projectId) async {
-    final f = File('/tmp/sri_progress_$projectId.json');
+    final f = File('sri_progress_$projectId.json');
     if (!f.existsSync()) return '[]';
     
     final contents = f.readAsStringSync();
@@ -487,7 +487,7 @@ class SriEndpoint extends Endpoint {
       return SriDownloadResult(periods: periodResults, totalDescargadas: 0, totalDuplicadas: 0, totalErrores: 1);
     } finally {
       await browser?.close();
-      final f = File('/tmp/sri_progress_$projectId.json');
+      final f = File('sri_progress_$projectId.json');
       if (f.existsSync()) f.deleteSync(); // limpieza del buffer al completar
     }
   }
