@@ -440,7 +440,7 @@ class SriEndpoint extends Endpoint {
           pagina++;
         }
 
-        _log('Período ${period.year}-${period.month}: ✓${descargadas} dup=${duplicadas} err=${errores}');
+        _log('Período ${period.year}-${period.month}: ✓$descargadas dup=$duplicadas err=$errores');
         periodResults.add(SriPeriodResult(
           year: period.year, month: period.month,
           descargadas: descargadas, duplicadas: duplicadas, errores: errores));
