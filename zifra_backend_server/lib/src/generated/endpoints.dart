@@ -340,6 +340,24 @@ class Endpoints extends _i1.EndpointDispatch {
       name: 'sri',
       endpoint: endpoints['sri']!,
       methodConnectors: {
+        'getProgress': _i1.MethodConnector(
+          name: 'getProgress',
+          params: {
+            'projectId': _i1.ParameterDescription(
+              name: 'projectId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['sri'] as _i6.SriEndpoint).getProgress(
+            session,
+            params['projectId'],
+          ),
+        ),
         'downloadAndSave': _i1.MethodConnector(
           name: 'downloadAndSave',
           params: {
@@ -375,7 +393,7 @@ class Endpoints extends _i1.EndpointDispatch {
             params['projectId'],
             params['periods'],
           ),
-        )
+        ),
       },
     );
   }

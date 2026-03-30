@@ -16,4 +16,5 @@ projects:
   - createProject:
   - getOpenProjects:
 sri:
+  - getProgress:
   - downloadAndSave:

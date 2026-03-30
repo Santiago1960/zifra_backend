@@ -6,6 +6,9 @@ import 'package:puppeteer/puppeteer.dart';
 import 'sri_xml_parser.dart';
 import 'generated/protocol.dart';
 
+/// Función de log que emite a consola y al buffer de progreso.
+typedef _LogFn = void Function(String msg, {String type, int? done, int? total});
+
 class SriEndpoint extends Endpoint {
   static const _sriLoginUrl =
       'https://srienlinea.sri.gob.ec/auth/realms/Internet/protocol/openid-connect/auth'
@@ -31,7 +34,45 @@ class SriEndpoint extends Endpoint {
   final _random = Random();
   final _parser = SriXmlParser();
 
-  void _log(String msg) => stderr.writeln('[${DateTime.now()}] SRI-BOT: $msg');
+  // ---------------------------------------------------------------------------
+  // Progress buffer — keyed by projectId, drenado por getProgress()
+  // ---------------------------------------------------------------------------
+
+  /// Crea la función de log para una descarga: emite a stderr + archivo temporal (por los Isolate).
+  _LogFn _makeLog(int projectId) =>
+      (String msg, {String type = 'info', int? done, int? total}) {
+        stderr.writeln('[${DateTime.now()}] SRI-BOT: $msg');
+        
+        final f = File('/tmp/sri_progress_$projectId.json');
+        var events = <Map<String, dynamic>>[];
+        if (f.existsSync()) {
+          try {
+            events = List<Map<String, dynamic>>.from(jsonDecode(f.readAsStringSync()));
+          } catch (_) {}
+        }
+        
+        events.add({
+          'msg': msg,
+          'type': type,
+          'ts': DateTime.now().millisecondsSinceEpoch,
+          if (done != null) 'done': done,
+          if (total != null) 'total': total,
+        });
+        
+        f.writeAsStringSync(jsonEncode(events));
+      };
+
+  /// Retorna los eventos acumulados desde la última llamada y los elimina.
+  /// El cliente Flutter llama esto cada ~1.5s mientras la descarga está activa.
+  /// Responde: JSON string → `[{"msg":"...","type":"info","ts":0}, ...]`
+  Future<String> getProgress(Session session, int projectId) async {
+    final f = File('/tmp/sri_progress_$projectId.json');
+    if (!f.existsSync()) return '[]';
+    
+    final contents = f.readAsStringSync();
+    f.deleteSync(); // clear buffer after reading
+    return contents;
+  }
 
   /// Lee el archivo .env y retorna un mapa clave=valor.
   Map<String, String> _readEnvFile() {
@@ -84,7 +125,7 @@ class SriEndpoint extends Endpoint {
   // Helpers de reCAPTCHA y formulario
   // ---------------------------------------------------------------------------
 
-  Future<String?> _extraerSiteKey(Page page) async {
+  Future<String?> _extraerSiteKey(Page page, _LogFn log) async {
     final key = await page.evaluate<String?>(r'''() => {
       for (const s of document.querySelectorAll('script[src]')) {
         const m = s.src.match(/[?&]render=([^&]+)/);
@@ -93,17 +134,17 @@ class SriEndpoint extends Endpoint {
       const el = document.querySelector('[data-sitekey]');
       if (el) return el.getAttribute('data-sitekey');
       for (const s of document.querySelectorAll('script:not([src])')) {
-        const m = s.textContent.match(/['"](6[A-Za-z0-9_-]{38})['"]/);
+        const m = s.textContent.match(/['\"](6[A-Za-z0-9_-]{38})['\"]/)
         if (m) return m[1];
       }
       return null;
     }''');
-    _log('Site key: ${key ?? "NO ENCONTRADO"}');
+    log('Site key: ${key ?? "NO ENCONTRADO"}');
     return key;
   }
 
-  Future<String?> _solveRecaptcha(String apiKey, String siteKey, String pageUrl) async {
-    _log('Solicitando token a CapSolver...');
+  Future<String?> _solveRecaptcha(String apiKey, String siteKey, String pageUrl, _LogFn log) async {
+    log('Solicitando token...');
     final client = HttpClient();
     try {
       final createReq = await client.postUrl(Uri.parse('$_capsolverUrl/createTask'));
@@ -113,10 +154,10 @@ class SriEndpoint extends Endpoint {
         'task': { 'type': 'ReCaptchaV3EnterpriseTaskProxyLess', 'websiteURL': pageUrl, 'websiteKey': siteKey, 'pageAction': 'submit' },
       }));
       final createBody = jsonDecode(await (await createReq.close()).transform(utf8.decoder).join());
-      if (createBody['errorId'] != 0) { _log('CapSolver error: ${createBody['errorDescription']}'); return null; }
+      if (createBody['errorId'] != 0) { log('Error: ${createBody['errorDescription']}', type: 'error'); return null; }
 
       final taskId = createBody['taskId'] as String;
-      _log('CapSolver taskId=$taskId...');
+      log('taskId=$taskId...');
       for (int i = 0; i < 24; i++) {
         await Future.delayed(const Duration(seconds: 5));
         final getReq = await client.postUrl(Uri.parse('$_capsolverUrl/getTaskResult'));
@@ -125,13 +166,13 @@ class SriEndpoint extends Endpoint {
         final getBody = jsonDecode(await (await getReq.close()).transform(utf8.decoder).join());
         if (getBody['status'] == 'ready') {
           final token = getBody['solution']?['gRecaptchaResponse'] as String?;
-          _log('Token obtenido (${token?.length ?? 0}B).');
+          log('Token obtenido (${token?.length ?? 0}B).', type: 'success');
           return token;
         }
       }
-      _log('CapSolver timeout.');
+      log('CS timeout.', type: 'error');
       return null;
-    } catch (e) { _log('CapSolver error: $e'); return null; }
+    } catch (e) { log('CS error: $e', type: 'error'); return null; }
     finally { client.close(); }
   }
 
@@ -154,14 +195,14 @@ class SriEndpoint extends Endpoint {
       }''', args: [year, mes]);
 
   /// Aplica filtros, resuelve CAPTCHA y espera la tabla de resultados.
-  Future<bool> _buscarComprobantes(Page page, String apiKey, int year, String mes) async {
+  Future<bool> _buscarComprobantes(Page page, String apiKey, int year, String mes, _LogFn log) async {
     await _aplicarFiltros(page, year, mes);
     await _humanDelay(minMs: 800, maxMs: 1500);
 
-    final siteKey = await _extraerSiteKey(page);
+    final siteKey = await _extraerSiteKey(page, log);
     if (siteKey != null) {
-      final token = await _solveRecaptcha(apiKey, siteKey, page.url ?? _comprobantesUrl);
-      if (token != null) { await _inyectarToken(page, token); _log('Token inyectado.'); }
+      final token = await _solveRecaptcha(apiKey, siteKey, page.url ?? _comprobantesUrl, log);
+      if (token != null) { await _inyectarToken(page, token); log('Token entregado.'); }
     }
 
     try {
@@ -170,7 +211,7 @@ class SriEndpoint extends Endpoint {
         timeout: const Duration(seconds: 15),
         polling: Polling.interval(const Duration(milliseconds: 500)),
       );
-    } catch (_) { _log('WARN: Botón sigue deshabilitado. Forzando click...'); }
+    } catch (_) { log('WARN: Botón sigue deshabilitado. Forzando click...', type: 'error'); }
 
     await page.evaluate(r'''() => { const btn = document.querySelector("#frmPrincipal\\:btnBuscar"); if (btn) btn.click(); }''');
 
@@ -180,20 +221,20 @@ class SriEndpoint extends Endpoint {
         timeout: const Duration(seconds: 40),
         polling: Polling.interval(const Duration(milliseconds: 1000)),
       );
-      _log('Tabla encontrada.');
+      log('Tabla de comprobantes encontrada.', type: 'success');
       return true;
     } catch (_) {
       try { final b = await page.screenshot(); await File('/tmp/sri_debug_${DateTime.now().millisecondsSinceEpoch}.png').writeAsBytes(b); } catch (_) {}
-      _log('WARN: Tabla no apareció en 40s.');
+      log('WARN: Tabla no apareció en 40s.', type: 'error');
       return false;
     }
   }
 
   // ---------------------------------------------------------------------------
-  // Descarga de XMLs de la página actual (retorna el contenido raw de los XML)
+  // Descarga de XMLs de la página actual
   // ---------------------------------------------------------------------------
 
-  Future<List<String>> _descargarXmlsPaginaActual(Page page) async {
+  Future<List<String>> _descargarXmlsPaginaActual(Page page, _LogFn log) async {
     final allRowsData = await page.evaluate<List>(r'''() => {
       const tabla = document.getElementById("frmPrincipal:tablaCompRecibidos");
       if (!tabla) return [];
@@ -216,7 +257,6 @@ class SriEndpoint extends Endpoint {
 
     if (dataRows.isEmpty) return [];
 
-    // Capturar estado del form para POSTs directos
     final pageState = await page.evaluate<Map>(r'''() => {
       const form = document.getElementById("frmPrincipal");
       if (!form) return { url: window.location.href, fields: {} };
@@ -228,13 +268,13 @@ class SriEndpoint extends Endpoint {
     final baseFields = (pageState['fields'] as Map).cast<String, String>();
     final cookieHeader = (await page.cookies()).map((c) => '${c.name}=${c.value}').join('; ');
 
+    final total = dataRows.length;
     final xmlContents = <String>[];
-    for (int i = 0; i < dataRows.length; i++) {
+    for (int i = 0; i < total; i++) {
       final row = dataRows[i];
       final clave = row['clave'] as String;
       final elements = (row['elements'] as List).map((e) => e as Map).toList();
 
-      // Buscar el botón de descarga XML por ID/title, luego por posición en columnas tardías
       final xmlBtn = elements.where((e) {
         final id = (e['id'] as String? ?? '').toLowerCase();
         final title = (e['title'] as String? ?? '').toLowerCase();
@@ -245,7 +285,10 @@ class SriEndpoint extends Endpoint {
         return tdIdx >= 4 && !onclick.contains('dlgPanelDetalleFactura') && !onclick.contains('dlgDocumentos');
       }).lastOrNull;
 
-      if (xmlBtn == null) { _log('[${i + 1}/${dataRows.length}] ✗ Sin botón XML'); continue; }
+      if (xmlBtn == null) {
+        log('[${i + 1}/$total] ✗ Sin botón XML', type: 'error', done: i + 1, total: total);
+        continue;
+      }
       final btnId = xmlBtn['id'] as String? ?? '';
 
       try {
@@ -268,11 +311,11 @@ class SriEndpoint extends Endpoint {
         final responseText = utf8.decode(bytes, allowMalformed: true);
         if (responseText.trimLeft().startsWith('<?xml') && !responseText.contains('<partial-response>') && bytes.length > 200) {
           xmlContents.add(responseText);
-          _log('[${i + 1}/${dataRows.length}] ✓ $clave');
+          log('[${i + 1}/$total] ✓ ${clave.substring(0, 10)}...', type: 'success', done: i + 1, total: total);
         } else {
-          _log('[${i + 1}/${dataRows.length}] ✗ No es XML: ${responseText.substring(0, responseText.length.clamp(0, 200))}');
+          log('[${i + 1}/$total] ✗ No es XML valido', type: 'error', done: i + 1, total: total);
         }
-      } catch (e) { _log('[${i + 1}/${dataRows.length}] ✗ Error: $e'); }
+      } catch (e) { log('[${i + 1}/$total] ✗ Error: $e', type: 'error', done: i + 1, total: total); }
 
       await _humanDelay(minMs: 300, maxMs: 700);
     }
@@ -284,11 +327,10 @@ class SriEndpoint extends Endpoint {
   // ---------------------------------------------------------------------------
 
   Future<({int guardadas, int duplicadas, int errores})> _guardarFacturas(
-      Session session, List<Invoices> facturas, int projectId) async {
+      Session session, List<Invoices> facturas, int projectId, _LogFn log) async {
     int guardadas = 0, duplicadas = 0, errores = 0;
 
     for (final factura in facturas) {
-      // Verificar duplicado por clave de acceso (índice único en BD)
       final existing = await Invoices.db.findFirstRow(session,
           where: (t) => t.claveAcceso.equals(factura.claveAcceso));
       if (existing != null) { duplicadas++; continue; }
@@ -311,7 +353,7 @@ class SriEndpoint extends Endpoint {
           }
         });
         guardadas++;
-      } catch (e) { _log('Error guardando ${factura.claveAcceso}: $e'); errores++; }
+      } catch (e) { log('Error guardando ${factura.claveAcceso}: $e', type: 'error'); errores++; }
     }
     return (guardadas: guardadas, duplicadas: duplicadas, errores: errores);
   }
@@ -322,11 +364,11 @@ class SriEndpoint extends Endpoint {
 
   /// Descarga los comprobantes del SRI para múltiples períodos y los guarda
   /// directamente en el proyecto indicado, marcados como [certificada]=true.
-  ///
-  /// Abre el browser una sola vez — login único — itera por cada período.
+  /// El progreso puede consultarse en tiempo real vía [getProgress].
   Future<SriDownloadResult> downloadAndSave(
       Session session, String ruc, String password, int projectId, List<SriPeriod> periods) async {
-    _log('=== INICIO $ruc projectId=$projectId períodos=${periods.length} ===');
+    final log = _makeLog(projectId);
+    log('=== INICIO $ruc projectId=$projectId períodos=${periods.length} ===');
     Browser? browser;
     final periodResults = <SriPeriodResult>[];
 
@@ -334,11 +376,10 @@ class SriEndpoint extends Endpoint {
       final capsolverApiKey = Platform.environment['CAPSOLVER_API_KEY'] ??
           _readEnvFile()['CAPSOLVER_API_KEY'] ?? '';
       if (capsolverApiKey.isEmpty) {
-        _log('ERROR: CAPSOLVER_API_KEY no configurada.');
+        log('ERROR: CS_API_KEY no configurada.', type: 'error');
         return SriDownloadResult(periods: [], totalDescargadas: 0, totalDuplicadas: 0, totalErrores: 1);
       }
 
-      // Seleccionar ejecutable de Chrome/Chromium disponible
       const chromeMac         = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
       const chromeLinux       = '/usr/bin/google-chrome';
       const chromiumLinux     = '/usr/bin/chromium';
@@ -350,7 +391,7 @@ class SriEndpoint extends Endpoint {
           : File(chromiumBrowser).existsSync()            ? chromiumBrowser
           : File(chromiumSnap).existsSync()               ? chromiumSnap
           : null;
-      _log('Browser: ${execPath ?? "puppeteer-bundled"}');
+      log('Browser: ${execPath ?? "puppeteer-bundled"}');
 
       browser = await puppeteer.launch(
         headless: false,
@@ -373,20 +414,8 @@ class SriEndpoint extends Endpoint {
       await page.setViewport(DeviceViewport(width: 1280, height: 900));
       await page.evaluateOnNewDocument(_stealthScript);
 
-      // Interceptor para log del token CAPTCHA en los POSTs
-      await page.setRequestInterception(true);
-      page.onRequest.listen((req) {
-        if (req.url.contains('comprobantesRecibidos.jsf') && req.method == 'POST') {
-          final body = req.postData ?? '';
-          final hasToken = body.contains('g-recaptcha-response');
-          final empty = RegExp(r'g-recaptcha-response=(&|$)').hasMatch(body);
-          _log('POST captcha=${hasToken ? (empty ? "VACÍO" : "PRESENTE(${body.length}B)") : "AUSENTE"}');
-        }
-        req.continueRequest();
-      });
-
-      // --- LOGIN (una sola vez para todos los períodos) ---
-      _log('Autenticando...');
+      // --- LOGIN ---
+      log('Autenticando en SRI...');
       await page.goto(_sriLoginUrl, wait: Until.domContentLoaded, timeout: const Duration(seconds: 60));
       await page.waitForSelector('#usuario', timeout: const Duration(seconds: 20));
       await page.type('#usuario', ruc, delay: Duration(milliseconds: 50 + _random.nextInt(100)));
@@ -397,36 +426,35 @@ class SriEndpoint extends Endpoint {
       await page.waitForNavigation(wait: Until.domContentLoaded, timeout: const Duration(seconds: 60));
 
       if (!page.url!.contains('sri-en-linea')) {
-        _log('ERROR: Login fallido. URL: ${page.url}');
+        log('ERROR: Login fallido. URL: ${page.url}', type: 'error');
         return SriDownloadResult(periods: [], totalDescargadas: 0, totalDuplicadas: 0, totalErrores: 1);
       }
+      log('Login exitoso.', type: 'success');
 
       // --- ITERAR POR PERÍODO ---
       for (final period in periods) {
-        _log('--- Período ${period.year}-${period.month.toString().padLeft(2, "0")} ---');
+        final periodoStr = '${period.year}-${period.month.toString().padLeft(2, "0")}';
+        log('--- Período $periodoStr ---');
         int descargadas = 0, duplicadas = 0, errores = 0;
 
-        // Navegar a la página de comprobantes (si es el primer período ya estamos ahí,
-        // si no, hay que regresar porque el SRI puede haber cambiado de estado)
         await page.goto(_comprobantesUrl, wait: Until.domContentLoaded, timeout: const Duration(seconds: 60));
         await page.waitForSelector('#frmPrincipal\\:btnBuscar', timeout: const Duration(seconds: 20));
         await _humanDelay(minMs: 1000, maxMs: 2000);
 
-        final busquedaOk = await _buscarComprobantes(page, capsolverApiKey, period.year, _meses[period.month]);
+        final busquedaOk = await _buscarComprobantes(page, capsolverApiKey, period.year, _meses[period.month], log);
         if (!busquedaOk) {
-          _log('Período ${period.year}-${period.month}: búsqueda fallida.');
+          log('Período $periodoStr: búsqueda fallida.', type: 'error');
           periodResults.add(SriPeriodResult(year: period.year, month: period.month, descargadas: 0, duplicadas: 0, errores: 1));
           continue;
         }
 
-        // Descargar con paginación
         int pagina = 1;
         while (true) {
-          _log('Página $pagina del período ${period.year}-${period.month}...');
-          final xmlContents = await _descargarXmlsPaginaActual(page);
+          log('Página $pagina — período $periodoStr...');
+          final xmlContents = await _descargarXmlsPaginaActual(page, log);
           final facturas = _parser.parseAll(xmlContents);
 
-          final resultado = await _guardarFacturas(session, facturas, projectId);
+          final resultado = await _guardarFacturas(session, facturas, projectId, log);
           descargadas += resultado.guardadas;
           duplicadas  += resultado.duplicadas;
           errores     += resultado.errores;
@@ -440,7 +468,7 @@ class SriEndpoint extends Endpoint {
           pagina++;
         }
 
-        _log('Período ${period.year}-${period.month}: ✓$descargadas dup=$duplicadas err=$errores');
+        log('Período $periodoStr: ✓$descargadas dup=$duplicadas err=$errores', type: 'success');
         periodResults.add(SriPeriodResult(
           year: period.year, month: period.month,
           descargadas: descargadas, duplicadas: duplicadas, errores: errores));
@@ -452,13 +480,15 @@ class SriEndpoint extends Endpoint {
         totalDuplicadas:  periodResults.fold(0, (s, p) => s + p.duplicadas),
         totalErrores:     periodResults.fold(0, (s, p) => s + p.errores),
       );
-      _log('=== FIN: ${result.totalDescargadas} guardadas, ${result.totalDuplicadas} duplicadas ===');
+      log('=== FIN: ${result.totalDescargadas} guardadas, ${result.totalDuplicadas} duplicadas ===', type: 'done');
       return result;
     } catch (e, st) {
-      _log('Error crítico: $e\n$st');
+      log('Error crítico: $e\n$st', type: 'error');
       return SriDownloadResult(periods: periodResults, totalDescargadas: 0, totalDuplicadas: 0, totalErrores: 1);
     } finally {
       await browser?.close();
+      final f = File('/tmp/sri_progress_$projectId.json');
+      if (f.existsSync()) f.deleteSync(); // limpieza del buffer al completar
     }
   }
 }
