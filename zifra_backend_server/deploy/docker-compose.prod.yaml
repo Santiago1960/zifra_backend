@@ -11,8 +11,8 @@ services:
       - role=monolith
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
-      - POSTGRES_DB=zifra_backend
-      - POSTGRES_USER=postgres
+      - POSTGRES_DB=zifra
+      - POSTGRES_USER=santiago
       - POSTGRES_PASSWORD=yeEq7XK7OU4U4QXKZqPB3iWVCYS0qflS
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -30,8 +30,8 @@ services:
     image: pgvector/pgvector:pg16
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: zifra_backend
+      POSTGRES_USER: santiago
+      POSTGRES_DB: zifra
       POSTGRES_PASSWORD: yeEq7XK7OU4U4QXKZqPB3iWVCYS0qflS
     ports:
       - "0.0.0.0:5432:5432"
