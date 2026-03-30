@@ -43,35 +43,40 @@ class SriEndpoint extends Endpoint {
       (String msg, {String type = 'info', int? done, int? total}) {
         stderr.writeln('[${DateTime.now()}] SRI-BOT: $msg');
         
-        final f = File('sri_progress_$projectId.json');
-        var events = <Map<String, dynamic>>[];
-        if (f.existsSync()) {
-          try {
-            events = List<Map<String, dynamic>>.from(jsonDecode(f.readAsStringSync()));
-          } catch (_) {}
-        }
-        
-        events.add({
+        final evt = {
           'msg': msg,
           'type': type,
           'ts': DateTime.now().millisecondsSinceEpoch,
           if (done != null) 'done': done,
           if (total != null) 'total': total,
-        });
-        
-        f.writeAsStringSync(jsonEncode(events));
+        };
+        try {
+          final f = File('${Directory.systemTemp.path}/sri_progress_$projectId.txt');
+          f.writeAsStringSync(jsonEncode(evt) + '\n', mode: FileMode.append);
+        } catch (_) {}
       };
 
   /// Retorna los eventos acumulados desde la última llamada y los elimina.
   /// El cliente Flutter llama esto cada ~1.5s mientras la descarga está activa.
   /// Responde: JSON string → `[{"msg":"...","type":"info","ts":0}, ...]`
   Future<String> getProgress(Session session, int projectId) async {
-    final f = File('sri_progress_$projectId.json');
-    if (!f.existsSync()) return '[]';
+    final path = '${Directory.systemTemp.path}/sri_progress_$projectId.txt';
+    final f = File(path);
+    if (!f.existsSync()) return '[]'; // Safe boundary sync check
     
-    final contents = f.readAsStringSync();
-    f.deleteSync(); // clear buffer after reading
-    return contents;
+    try {
+      final lines = f.readAsLinesSync();
+      // Renombrar/borrar el archivo lo antes posible para minimizar colisiones
+      f.deleteSync(); 
+      final evts = <Map<String, dynamic>>[];
+      for (var line in lines) {
+        if (line.trim().isEmpty) continue;
+        try { evts.add(jsonDecode(line) as Map<String, dynamic>); } catch (_) {}
+      }
+      return jsonEncode(evts);
+    } catch (_) {
+      return '[]';
+    }
   }
 
   /// Lee el archivo .env y retorna un mapa clave=valor.
@@ -487,8 +492,10 @@ class SriEndpoint extends Endpoint {
       return SriDownloadResult(periods: periodResults, totalDescargadas: 0, totalDuplicadas: 0, totalErrores: 1);
     } finally {
       await browser?.close();
-      final f = File('sri_progress_$projectId.json');
-      if (f.existsSync()) f.deleteSync(); // limpieza del buffer al completar
+      try {
+        final f = File('${Directory.systemTemp.path}/sri_progress_$projectId.txt');
+        if (f.existsSync()) f.deleteSync(); // limpieza del buffer al completar
+      } catch (_) {}
     }
   }
 }
