@@ -57,4 +57,40 @@ class ProjectsEndpoint extends Endpoint {
 
     return projectsWithInvoices;
   }
+
+  Future<void> deleteProject(Session session, int projectId) async {
+    final project = await Projects.db.findById(session, projectId);
+    if (project == null) throw ProjectException(message: 'Proyecto no encontrado');
+    if (project.isClosed) throw ProjectException(message: 'No se puede eliminar un proyecto cerrado');
+
+    // Obtener todas las facturas para borrar sus hijos en cascada
+    final invoices = await Invoices.db.find(
+      session,
+      where: (t) => t.projectId.equals(projectId),
+    );
+
+    // Borrar hijos de cada factura, luego facturas, luego proyecto
+    for (final invoice in invoices) {
+      await InvoiceDetail.db.deleteWhere(session, where: (t) => t.invoiceId.equals(invoice.id!));
+      await Pago.db.deleteWhere(session, where: (t) => t.invoiceId.equals(invoice.id!));
+      await InvoiceInfoAdicional.db.deleteWhere(session, where: (t) => t.invoiceId.equals(invoice.id!));
+    }
+    await Invoices.db.deleteWhere(session, where: (t) => t.projectId.equals(projectId));
+    await Projects.db.deleteRow(session, project);
+  }
+
+  Future<void> closeProject(Session session, int projectId) async {
+    final project = await Projects.db.findById(session, projectId);
+    if (project == null) throw ProjectException(message: 'Proyecto no encontrado');
+    if (project.isClosed) throw ProjectException(message: 'El proyecto ya está cerrado');
+
+    await Projects.db.updateRow(session, project..isClosed = true);
+  }
+
+  Future<List<Projects>> getClosedProjects(Session session, {String? rucBeneficiario}) async {
+    return await Projects.db.find(
+      session,
+      where: (t) => t.isClosed.equals(true) & (rucBeneficiario == null ? t.rucBeneficiario.equals(null) : t.rucBeneficiario.equals(rucBeneficiario)),
+    );
+  }
 }

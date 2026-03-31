@@ -15,6 +15,9 @@ invoices:
 projects:
   - createProject:
   - getOpenProjects:
+  - deleteProject:
+  - closeProject:
+  - getClosedProjects:
 sri:
   - getProgress:
   - downloadAndSave:

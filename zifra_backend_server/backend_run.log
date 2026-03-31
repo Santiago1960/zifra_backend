@@ -1,0 +1,19 @@
+SERVERPOD version: 2.9.2, dart: 3.10.4 (stable) (Tue Dec 9 00:01:55 2025 -0800) on "macos_arm64", time: 2026-03-31 15:50:37.463677Z
+runMode: development
+serverId: default
+role: monolith
+loggingMode: normal
+applyMigrations: false
+applyRepairMigration: false
+SERVERPOD initialized, time: 2026-03-31 15:50:37.509402Z
+Insights listening on port 8081
+Server default listening on port 8080
+2026-03-31 15:50:37.934982Z WebServer  INFO: Webserver listening on port 8082
+TIME                        ID         TYPE           CONTEXT                  DETAILS
+--------------------------- ---------- -------------- ------------------------ ------------------------------
+2026-03-31 15:51:13.257292Z  207175305 METHOD         projects.getOpenProjects user=null, queries=2, duration=29µs
+2026-03-31 15:51:16.878262Z  470147779 METHOD         projects.closeProject    user=null, queries=2, duration=9µs
+2026-03-31 15:51:16.894809Z  671549394 METHOD         projects.getOpenProjects user=null, queries=1, duration=4µs
+2026-03-31 15:51:29.186459Z  758404023 METHOD         projects.getClosedProjects user=null, queries=1, duration=4µs
+2026-03-31 15:51:34.250405Z  680548170 METHOD         invoices.getProjectInvoices user=null, queries=4, duration=57µs
+2026-03-31 15:51:34.398726Z  701338971 METHOD         category.getCategories   user=null, queries=1, duration=5µs
