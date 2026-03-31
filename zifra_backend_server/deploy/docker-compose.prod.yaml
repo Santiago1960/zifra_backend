@@ -16,6 +16,8 @@ services:
       - POSTGRES_PASSWORD=yeEq7XK7OU4U4QXKZqPB3iWVCYS0qflS
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+    env_file:
+      - ../.env
     ports:
       - "8080:8080"
       - "8081:8081"
