@@ -4,6 +4,7 @@ fields:
   id: int?
   userId: String
   name: String
+  reference: String?
   color: String
   isDeleted: bool?, default=false
-  deletedAt: DateTime?  
+  deletedAt: DateTime? 

@@ -17,6 +17,7 @@ abstract class Category
     this.id,
     required this.userId,
     required this.name,
+    this.reference,
     required this.color,
     bool? isDeleted,
     this.deletedAt,
@@ -26,6 +27,7 @@ abstract class Category
     int? id,
     required String userId,
     required String name,
+    String? reference,
     required String color,
     bool? isDeleted,
     DateTime? deletedAt,
@@ -36,6 +38,7 @@ abstract class Category
       id: jsonSerialization['id'] as int?,
       userId: jsonSerialization['userId'] as String,
       name: jsonSerialization['name'] as String,
+      reference: jsonSerialization['reference'] as String?,
       color: jsonSerialization['color'] as String,
       isDeleted: jsonSerialization['isDeleted'] as bool?,
       deletedAt: jsonSerialization['deletedAt'] == null
@@ -55,6 +58,8 @@ abstract class Category
 
   String name;
 
+  String? reference;
+
   String color;
 
   bool? isDeleted;
@@ -71,6 +76,7 @@ abstract class Category
     int? id,
     String? userId,
     String? name,
+    String? reference,
     String? color,
     bool? isDeleted,
     DateTime? deletedAt,
@@ -81,6 +87,7 @@ abstract class Category
       if (id != null) 'id': id,
       'userId': userId,
       'name': name,
+      if (reference != null) 'reference': reference,
       'color': color,
       if (isDeleted != null) 'isDeleted': isDeleted,
       if (deletedAt != null) 'deletedAt': deletedAt?.toJson(),
@@ -93,6 +100,7 @@ abstract class Category
       if (id != null) 'id': id,
       'userId': userId,
       'name': name,
+      if (reference != null) 'reference': reference,
       'color': color,
       if (isDeleted != null) 'isDeleted': isDeleted,
       if (deletedAt != null) 'deletedAt': deletedAt?.toJson(),
@@ -136,6 +144,7 @@ class _CategoryImpl extends Category {
     int? id,
     required String userId,
     required String name,
+    String? reference,
     required String color,
     bool? isDeleted,
     DateTime? deletedAt,
@@ -143,6 +152,7 @@ class _CategoryImpl extends Category {
           id: id,
           userId: userId,
           name: name,
+          reference: reference,
           color: color,
           isDeleted: isDeleted,
           deletedAt: deletedAt,
@@ -156,6 +166,7 @@ class _CategoryImpl extends Category {
     Object? id = _Undefined,
     String? userId,
     String? name,
+    Object? reference = _Undefined,
     String? color,
     Object? isDeleted = _Undefined,
     Object? deletedAt = _Undefined,
@@ -164,6 +175,7 @@ class _CategoryImpl extends Category {
       id: id is int? ? id : this.id,
       userId: userId ?? this.userId,
       name: name ?? this.name,
+      reference: reference is String? ? reference : this.reference,
       color: color ?? this.color,
       isDeleted: isDeleted is bool? ? isDeleted : this.isDeleted,
       deletedAt: deletedAt is DateTime? ? deletedAt : this.deletedAt,
@@ -179,6 +191,10 @@ class CategoryTable extends _i1.Table<int?> {
     );
     name = _i1.ColumnString(
       'name',
+      this,
+    );
+    reference = _i1.ColumnString(
+      'reference',
       this,
     );
     color = _i1.ColumnString(
@@ -200,6 +216,8 @@ class CategoryTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString name;
 
+  late final _i1.ColumnString reference;
+
   late final _i1.ColumnString color;
 
   late final _i1.ColumnBool isDeleted;
@@ -211,6 +229,7 @@ class CategoryTable extends _i1.Table<int?> {
         id,
         userId,
         name,
+        reference,
         color,
         isDeleted,
         deletedAt,
