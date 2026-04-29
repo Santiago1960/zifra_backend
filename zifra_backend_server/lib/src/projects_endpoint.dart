@@ -35,27 +35,10 @@ class ProjectsEndpoint extends Endpoint {
   }
 
   Future<List<Projects>> getOpenProjects(Session session, {String? rucBeneficiario}) async {
-    // 1. Buscar proyectos abiertos
-    final openProjects = await Projects.db.find(
+    return await Projects.db.find(
       session,
       where: (t) => t.isClosed.equals(false) & (rucBeneficiario == null ? t.rucBeneficiario.equals(null) : t.rucBeneficiario.equals(rucBeneficiario)),
     );
-
-    List<Projects> projectsWithInvoices = [];
-
-    // 2. Filtrar proyectos que tengan facturas
-    for (var project in openProjects) {
-      final invoiceCount = await Invoices.db.count(
-        session,
-        where: (t) => t.projectId.equals(project.id!),
-      );
-      
-      if (invoiceCount > 0) {
-        projectsWithInvoices.add(project);
-      }
-    }
-
-    return projectsWithInvoices;
   }
 
   Future<void> deleteProject(Session session, int projectId) async {
@@ -83,6 +66,23 @@ class ProjectsEndpoint extends Endpoint {
     final project = await Projects.db.findById(session, projectId);
     if (project == null) throw ProjectException(message: 'Proyecto no encontrado');
     if (project.isClosed) throw ProjectException(message: 'El proyecto ya está cerrado');
+
+    // Eliminar las facturas no seleccionadas y sus dependencias
+    final unselectedInvoices = await Invoices.db.find(
+      session,
+      where: (t) => t.projectId.equals(projectId) & t.estaSeleccionada.equals(false),
+    );
+
+    for (final invoice in unselectedInvoices) {
+      await InvoiceDetail.db.deleteWhere(session, where: (t) => t.invoiceId.equals(invoice.id!));
+      await Pago.db.deleteWhere(session, where: (t) => t.invoiceId.equals(invoice.id!));
+      await InvoiceInfoAdicional.db.deleteWhere(session, where: (t) => t.invoiceId.equals(invoice.id!));
+    }
+
+    if (unselectedInvoices.isNotEmpty) {
+       final unselectedIds = unselectedInvoices.map((e) => e.id!).toList();
+       await Invoices.db.deleteWhere(session, where: (t) => t.id.inSet(unselectedIds.toSet()));
+    }
 
     await Projects.db.updateRow(session, project..isClosed = true);
   }

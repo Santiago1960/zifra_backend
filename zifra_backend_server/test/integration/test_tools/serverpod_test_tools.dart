@@ -511,6 +511,72 @@ class _InvoicesEndpoint {
       }
     });
   }
+
+  _i3.Future<_i6.Invoices?> updateInvoiceSelection(
+    _i1.TestSessionBuilder sessionBuilder,
+    String claveAcceso,
+    bool estaSeleccionada,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'invoices',
+        method: 'updateInvoiceSelection',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'invoices',
+          methodName: 'updateInvoiceSelection',
+          parameters: _i1.testObjectToJson({
+            'claveAcceso': claveAcceso,
+            'estaSeleccionada': estaSeleccionada,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i6.Invoices?>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<bool> updateInvoicesSelectionBatch(
+    _i1.TestSessionBuilder sessionBuilder,
+    List<String> clavesAcceso,
+    bool estaSeleccionada,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'invoices',
+        method: 'updateInvoicesSelectionBatch',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'invoices',
+          methodName: 'updateInvoicesSelectionBatch',
+          parameters: _i1.testObjectToJson({
+            'clavesAcceso': clavesAcceso,
+            'estaSeleccionada': estaSeleccionada,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }
 
 class _ProjectsEndpoint {

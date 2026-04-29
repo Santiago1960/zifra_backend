@@ -12,6 +12,8 @@ invoices:
   - createProjectWithInvoices:
   - updateInvoiceCategory:
   - updateInvoicesCategory:
+  - updateInvoiceSelection:
+  - updateInvoicesSelectionBatch:
 projects:
   - createProject:
   - getOpenProjects:

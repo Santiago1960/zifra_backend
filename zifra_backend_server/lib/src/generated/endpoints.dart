@@ -292,6 +292,56 @@ class Endpoints extends _i1.EndpointDispatch {
             params['categoryId'],
           ),
         ),
+        'updateInvoiceSelection': _i1.MethodConnector(
+          name: 'updateInvoiceSelection',
+          params: {
+            'claveAcceso': _i1.ParameterDescription(
+              name: 'claveAcceso',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'estaSeleccionada': _i1.ParameterDescription(
+              name: 'estaSeleccionada',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['invoices'] as _i4.InvoicesEndpoint)
+                  .updateInvoiceSelection(
+            session,
+            params['claveAcceso'],
+            params['estaSeleccionada'],
+          ),
+        ),
+        'updateInvoicesSelectionBatch': _i1.MethodConnector(
+          name: 'updateInvoicesSelectionBatch',
+          params: {
+            'clavesAcceso': _i1.ParameterDescription(
+              name: 'clavesAcceso',
+              type: _i1.getType<List<String>>(),
+              nullable: false,
+            ),
+            'estaSeleccionada': _i1.ParameterDescription(
+              name: 'estaSeleccionada',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['invoices'] as _i4.InvoicesEndpoint)
+                  .updateInvoicesSelectionBatch(
+            session,
+            params['clavesAcceso'],
+            params['estaSeleccionada'],
+          ),
+        ),
       },
     );
     connectors['projects'] = _i1.EndpointConnector(

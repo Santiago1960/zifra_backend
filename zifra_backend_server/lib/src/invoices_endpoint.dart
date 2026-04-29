@@ -66,6 +66,7 @@ class InvoicesEndpoint extends Endpoint {
     await session.db.transaction((transaction) async {
       // ... (el resto del código de guardado sigue igual) ...
       for (var invoice in invoices) {
+        invoice.estaSeleccionada = true; // Seleccionado por defecto
         final insertedInvoice = await Invoices.db.insertRow(session, invoice, transaction: transaction);
         
         if (invoice.detalles != null) {
@@ -166,6 +167,7 @@ class InvoicesEndpoint extends Endpoint {
       for (var invoice in invoices) {
         // Asignar el ID del nuevo proyecto
         invoice.projectId = newProjectId;
+        invoice.estaSeleccionada = true; // Seleccionado por defecto
 
         final insertedInvoice = await Invoices.db
             .insertRow(session, invoice, transaction: transaction);
@@ -235,6 +237,55 @@ class InvoicesEndpoint extends Endpoint {
 
       for (var invoice in invoices) {
         final updatedInvoice = invoice.copyWith(categoryId: categoryId);
+        await Invoices.db.updateRow(
+          session, 
+          updatedInvoice, 
+          transaction: transaction
+        );
+      }
+    });
+    
+    return true;
+  }
+
+  Future<Invoices?> updateInvoiceSelection(
+    Session session,
+    String claveAcceso,
+    bool estaSeleccionada,
+  ) async {
+    final invoice = await Invoices.db.findFirstRow(
+      session,
+      where: (t) => t.claveAcceso.equals(claveAcceso),
+    );
+
+    if (invoice == null) {
+      return null;
+    }
+
+    final updatedInvoice = invoice.copyWith(estaSeleccionada: estaSeleccionada);
+    
+    await Invoices.db.updateRow(session, updatedInvoice);
+    
+    return updatedInvoice;
+  }
+
+  Future<bool> updateInvoicesSelectionBatch(
+    Session session,
+    List<String> clavesAcceso,
+    bool estaSeleccionada,
+  ) async {
+    if (clavesAcceso.isEmpty) return true;
+
+    await session.db.transaction((transaction) async {
+      // Find all invoices to update
+      final invoices = await Invoices.db.find(
+        session,
+        where: (t) => t.claveAcceso.inSet(clavesAcceso.toSet()),
+        transaction: transaction,
+      );
+
+      for (var invoice in invoices) {
+        final updatedInvoice = invoice.copyWith(estaSeleccionada: estaSeleccionada);
         await Invoices.db.updateRow(
           session, 
           updatedInvoice, 
